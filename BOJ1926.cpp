@@ -1,4 +1,4 @@
-/*#include <iostream>
+#include <iostream>
 #include <queue>
 
 using namespace std;
@@ -15,12 +15,12 @@ int main() {
 	cin.tie(0);
 
 	int info;
-	int dx[4] = { -1,0,1,0 }; // »ó ÇÏ
-	int dy[4] = { 0,-1,0,1 }; // ÁÂ ¿ì
+	int dx[4] = { -1,0,1,0 }; // ìƒ í•˜
+	int dy[4] = { 0,-1,0,1 }; // ì¢Œ ìš°
 
 
 
-	cin >> x >> y; // Çà ·Ä
+	cin >> x >> y; // í–‰ ë ¬
 
 	for (int i = 0; i < x; i++) {
 		for (int j = 0; j < y; j++) {
@@ -38,21 +38,21 @@ int main() {
 
 
 
-	//int a = q.front().first;
+	 //int a = q.front().first;
 	//int b = q.front().second;
 
 	for (int j = 0; j < x; j++) {
 		for (int k = 0; k < y; k++) {
 
-			if (vis[j][k] == 0 && paper[j][k] == 1) { //2 ny 2¿¡¼­ Å¥°¡ ºö
+			if (vis[j][k] == 0 && paper[j][k] == 1) { //2 ny 2ì—ì„œ íê°€ ë¹”
 				q.push({ j, k });
 				vis[j][k] = 1;
 				img_cnt++;
 				b_cnt = 0;
-
+				
 			}
-
-
+			
+			
 			while (!q.empty()) {
 				auto cur = q.front();
 				q.pop();
@@ -64,8 +64,8 @@ int main() {
 				}
 
 				for (int i = 0; i < 4; i++) { //cur.first = x, cur.second = y 
-					int nx = cur.first + dx[i]; // Çà
-					int ny = cur.second + dy[i]; // ¿­ 
+					int nx = cur.first + dx[i]; // í–‰
+					int ny = cur.second + dy[i]; // ì—´ 
 					if (nx < 0 || nx >= x || ny < 0 || ny >= y) continue; //cin >> row >> col; // x, y
 					if (vis[nx][ny] == 1 || paper[nx][ny] == 0) continue;
 					vis[nx][ny] = 1;
@@ -77,4 +77,4 @@ int main() {
 	cout << img_cnt << '\n';
 	cout << top_area;
 
-}*/
+}
