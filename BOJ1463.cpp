@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 using namespace std;
 
 int D[1000002];
@@ -36,7 +37,22 @@ int topdown(long N) {
 	
 }
 
-int main() {
+void bottomup(long N) {
+	D[1] = 0;
+	for (int i = 2; i <= N; i++) { // 위코드와 다른점은 i 부터 차근차근 문제를 해결해감
+		D[i] = D[i - 1] + 1;  //결국 최종적으로 N까지 끝내서 모든 문제를 해결하게 
+		if (i % 2 == 0) {
+			D[i] = min(D[i], D[i / 2] + 1);
+		}
+		if (i % 3 == 0) {
+			D[i] = min(D[i], D[i / 3] + 1);
+		}
+	}
+	cout << D[N];
+
+}
+
+void BOJ1463() {
 	
 	ios::sync_with_stdio(0);
 	cin.tie(0);
@@ -44,6 +60,8 @@ int main() {
 	long N;
 	cin >> N;
 
-	cout<<topdown(N);
+	//cout<<topdown(N);
+	bottomup(N);
+	
 	
 }
