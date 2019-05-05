@@ -4,7 +4,7 @@ CS 지식이 부족하다고 느끼기에 알고리즘 스터디 계획을 세�
 
 다음 강의를 완강하는것을 목표로함
 
-~~백준 알고리즘 기초 (30일) https://code.plus/course/4
+백준 알고리즘 기초 (30일) https://code.plus/course/4
 -> 강의 구림... 잘 가르치는것과 거리가 멀다.
 
 프로그래머스 어서와 자료구조 알고리즘은 처음이지? (2주) https://programmers.co.kr/learn/courses/57
