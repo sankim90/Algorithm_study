@@ -23,7 +23,7 @@ class Solution:
 
 if "__main__":
     sol = Solution()
-    print(sol.isPalindrome2("race a car"))
+    print(sol.isPalindrome("race a car"))
 
 
 
