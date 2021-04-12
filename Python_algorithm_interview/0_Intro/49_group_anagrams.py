@@ -13,4 +13,5 @@ class Solution:
 if "__main__":
     sol = Solution()
     strs = ["eat", "tea", "tan", "ate", "nat", "bat"]
-    sol.groupAnagrams(strs)
+    ret = sol.groupAnagrams(strs)
+    print(ret)

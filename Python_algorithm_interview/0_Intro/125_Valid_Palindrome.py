@@ -13,17 +13,19 @@ class Solution:
         return True
 
     def isPalindrome2(self, s: str) -> bool:
-        strs = deque()
+        # strs = deque()
+        strs = []
         for c in s:
             if c.isalnum():
                 strs.append(c.lower())
 
 
-        #return strs == strs[::-1]
+        return strs == strs[::-1]
 
 if "__main__":
     sol = Solution()
-    print(sol.isPalindrome("race a car"))
+    print(sol.isPalindrome2("race a car"))
+    #print(sol.isPalindrome("raar")) True
 
 
 
