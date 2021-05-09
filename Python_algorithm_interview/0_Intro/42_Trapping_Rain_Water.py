@@ -46,5 +46,6 @@ class Solution:
 
 if "__main__":
     sol = Solution()
-    input_data = [0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]
+    # input_data = [0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]
+    input_data = [0, 1]
     ret = sol.trap(input_data)
