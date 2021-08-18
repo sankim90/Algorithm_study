@@ -17,36 +17,30 @@ class Solution:
         return reverse(head)
 
     def reverseListList(self, head: ListNode) -> ListNode:
-        node, prev = head, None
+        node = head
+        prev = None
 
         while node:
             next, node.next = node.next, prev
-            prev, node = node, next
+            node, prev = next, node
 
         return prev
 
-    def reverseList(self, head: ListNode) -> ListNode:
-        if head == None or head.next == None:
-            return head
 
-        tmp = ListNode()
-        first_node = head
-        ptr = tmp
+    def san_reverseListList(self, head: ListNode) -> ListNode:
+        Node = head
+        prev = None
+        # 목표는 방향을 바꾸고, prev를 맨 끝으로 보내는것!
+        # NULL->1->2->3->4
+        # NULL<-1<-2<-3<-4
 
-        while head != None:
-            if head.next == None:
-                ptr.next = head #역순을 대입
-                prev.next = None #현재 Node 삭제
-                head = first_node #첫 Node로 초기화
-                ptr = ptr.next
-            prev = head
-            head = head.next
+        while Node:
+            Next = Node.next
+            Node.next = prev
+            prev = Node
+            Node = Next
 
-        #마지막 노드 처리
-        first_node.next = None
-        ptr.next = first_node
-
-        return tmp.next
+        return prev
 
 if "__main__":
     sol = Solution()
@@ -62,4 +56,4 @@ if "__main__":
     link3.next = link4
     link4.val = 4
 
-    print(sol.reverseList(link1))
+    print(sol.reverseListList(link1))
