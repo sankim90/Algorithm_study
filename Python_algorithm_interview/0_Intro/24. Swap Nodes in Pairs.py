@@ -33,6 +33,13 @@ class Solution:
 
         return root.next
 
+    def swapPairs_recur(self, head: ListNode) -> ListNode:
+        if head and head.next:
+            p = head.next  # 맨뒤로 보낸 후, 연결하여 스왑
+            head.next = self.swapPairs_recur(p.next) # 상상을 잘해야 한다..
+            p.next = head
+            return p
+        return head
 
 if "__main__":
     sol = Solution()
@@ -48,4 +55,5 @@ if "__main__":
     link3.next = link4
     link4.val = 4
 
-    sol.swapPairs(link1)
+    # sol.swapPairs(link1)
+    sol.swapPairs_recur(link1)
