@@ -149,6 +149,85 @@ void boj2490()
 
 }
 
+void boj2576()
+{
+    int tmp;
+    int j = 0;
+    int i = 0;
+    int sum = 0;
+    int min = 100; // max input
+
+    for(i=0; i<7; i++)
+    {
+        cin >> tmp;
+        if((tmp % 2) == 1)
+        {
+            sum += tmp;
+            if(min > tmp)
+                min = tmp;
+            j++;
+        }
+    }
+
+    if(j)
+        cout << sum << "\n" << min;
+    else
+        cout << "-1";
+}
+
+void boj2587()
+{
+    int sum = 0;
+    int arr[5];
+    int tmp;
+
+    for(int i=0; i<5; i++)
+    {
+        cin >> tmp;
+        arr[i] = tmp;
+        sum += tmp; 
+    }
+
+    sort(arr, arr+5);
+
+    cout << sum / 5 << '\n' << arr[2] << '\n';
+    
+}
+
+int boj2309() // 9P7 오름차순으로 결과내기
+{
+    int n = 0;
+    int tmp[9] = {1, 1, 1, 1, 1, 1, 1, 0, 0};
+    int sum = 0;
+
+    vector <int> v(9);
+    
+    for (n=0; n<9; n++)
+        cin >> v[n];
+
+    sort(v.begin(), v.end());
+
+    do {
+        for (int i=0; i<v.size(); i++)
+        {
+            if(tmp[i] == 1)
+            {
+                sum += v[i];
+                if(sum == 100)
+                {
+                    cout << '\n';
+                    for(int j = 0; j < 7; j++)
+                        cout << v[j] << '\n';
+                    return 0;
+                }
+            }
+        }
+        sum = 0;
+    } while(next_permutation(v.begin(), v.end()));
+    
+    return 0;
+}
+
 int main()
 {
     ios::sync_with_stdio(0);
@@ -159,7 +238,10 @@ int main()
     // boj2752();
     // boj2753();
     // boj2480();
-    boj2490();
+    // boj2490();
+    // boj2576();
+    // boj2587();
+    boj2309();
 
     return 0;
 }
