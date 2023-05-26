@@ -9,10 +9,10 @@ int func4(int n);
 
 int main()
 {
-    // cout << "Answer " << func1(16);
+    cout << "Answer \n" << func1(16);
     // int arr[3] = {1, 77, 2};
     // cout << "Answer " << func2(arr, 3);
-    cout << "Answer \n" << func3(756580036);
+    // cout << "Answer \n" << func3(756580036);
     // cout << "Answer " << func4(67108864);
     
 }

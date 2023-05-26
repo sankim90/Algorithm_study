@@ -228,6 +228,106 @@ int boj2309() // 9P7 오름차순으로 결과내기
     return 0;
 }
 
+void boj10093()
+{
+    unsigned long long a, b;
+    unsigned long long tmp;
+
+    cin >> a >> b;
+
+    if(a > b) //swap(a,b)로 대체가능
+    {
+        tmp = a;
+        a = b;
+        b = tmp;
+    }
+
+    if(a==b)
+    {
+        cout << '0';
+    }
+    else
+    {
+        cout << b - a - 1 <<'\n';
+        for(unsigned long long i=a+1; i<b; i++)
+        {
+            cout << i << " ";
+        }    
+    }
+}
+
+void boj1267()
+{
+    int N, tmp;
+    int sumY = 0;
+    int sumM = 0;
+    // vector <int> v(20);
+
+    cin >> N;
+
+    //Y: 30초마다 10원씩 청구, 60초마다 20원
+    //M: 60초마다 15원씩 청구 
+    
+    //barking dog sol: 
+    //Y += ((phone[n] / 30) + 1) * 10;
+    //M += ((phone[n] / 60) + 1) * 15;
+    for(int i=0; i<N; i++) // 60 65
+    {
+        cin >> tmp; // 둘다 계산 다해야함
+        if(tmp%29)
+            sumY += (tmp/30) * 10 + 10;
+        else
+            sumY += (tmp/30) * 10;
+        
+        if(tmp%59)
+            sumM += (tmp/60) * 15 + 15;
+        else
+            sumM += (tmp/60) * 15;
+    }
+
+    if(sumY > sumM)
+        cout << "M " << sumM;
+    else if(sumY < sumM)
+        cout << "Y "<< sumY;
+    else
+        cout << "Y M "<< sumY;
+
+}
+
+void boj10804()
+{
+    vector <int> v(20);
+    int i, a, b;
+
+    // reverse(v.begin()+1, v.begin()+5);  //이상 미만
+
+    for(i=0; i<20; i++) v[i] = i+1;
+
+    for(i=0; i<10; i++)
+    {
+        cin >> a >> b;
+        reverse(v.begin()+a-1, v.begin()+b);
+    }
+
+    for(auto j:v)
+        cout << j << ' ';
+}
+
+void boj15552()
+{
+    int i, N;
+    int a, b;
+
+    cin >> N;
+
+    for(i=0; i<N; i++)
+    {
+        cin >> a >> b;
+        cout << a + b <<'\n';
+    }
+}
+
+
 int main()
 {
     ios::sync_with_stdio(0);
@@ -241,7 +341,11 @@ int main()
     // boj2490();
     // boj2576();
     // boj2587();
-    boj2309();
+    // boj2309();
+    // boj10093();
+    // boj1267();
+    // boj10804();
+    boj15552();
 
     return 0;
 }
