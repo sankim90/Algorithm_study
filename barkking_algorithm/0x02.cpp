@@ -327,6 +327,67 @@ void boj15552()
     }
 }
 
+void print_stars()
+{
+    int N;
+    cin >> N;
+    //boj 2439
+    // for(int i=0; i<N; i++)
+    // {
+    //     for(int j=N; j>=1; j--)
+    //     {
+    //         if(j <= (i+1))
+    //             cout << "*";
+    //         else
+    //             cout << " ";
+    //     }
+    //     cout << "\n";
+    // }
+
+    //boj 2440~
+    for(int i=0; i<N; i++)
+    {
+        // for(int k=0; k<(2*i-1); k++)
+        for(int j=0; j<i; j++)
+        {
+            cout <<' ';
+        }
+
+        for(int k=0; k<(2*(N-i)-1); k++)
+        {
+            cout << '*';
+        }
+
+        // for(int j=(N-i); j>0; j--)
+        
+        cout << '\n';
+    }
+}
+
+void boj2562()
+{
+    int max = 0;
+    int tmp = 0;
+    int index;
+    int a[9];
+    for(int i=0; i<9; i++)
+    {
+        cin >> tmp;
+        if(tmp>max)
+        {
+            max = tmp;
+            index = i+1;
+        }
+    }
+    cout << max << '\n' << index;
+
+
+    // /* barking dog sol
+    // for(int i = 0; i < 9; i++) cin >> a[i];
+    // cout << *max_element(a, a+9) << '\n';
+    // cout << max_element(a, a+9) - a + 1;
+
+}
 
 int main()
 {
@@ -345,7 +406,9 @@ int main()
     // boj10093();
     // boj1267();
     // boj10804();
-    boj15552();
+    // boj15552();
+    // print_stars();
+    boj2562();
 
     return 0;
 }
