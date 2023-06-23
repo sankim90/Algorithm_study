@@ -114,9 +114,76 @@ int func2(int arr[], int n)
   return 0;
 }
 
+void boj2577()
+{
+  vector <int> v(10);
+
+  int a, b, c;
+  int rst = 0;
+  string s;
+  cin >> a >> b >> c;
+
+  rst = a * b * c; 
+  
+  s = to_string(rst);
+  //stoi도 있음
+
+/* 바킹독 솔루션
+  int t=A*B*C;
+  int d[10] = {};
+// 계산 결과를 자릿수별로 확인하여 저장
+  while (t>0) {
+    d[t%10]++;
+    t/=10;
+  }
+*/
+
+  for(auto i : s)
+  {
+    v[i - '0']++;
+  }
+
+  for(auto i : v)
+    cout << i <<'\n';
+
+}
+
+void boj1475()
+{
+  vector <int> v(10);
+  int n;
+  int cnt = 0;
+  int rcnt = 0;
+  int rst;
+  string str;
+
+  cin >> n;
+  str = to_string(n);
+
+  for(auto i : str) // 666 7777
+    v[i - '0']++;
+  
+  for(int i=0; i<10; i++) // 123669966 -> cnt 3, rcnt = 6
+  {
+    if(i == 6 || i == 9) 
+    {
+      rcnt += v[i]; // 669966 -> 6
+      continue;
+    }
+    else if(cnt < v[i])
+      cnt = v[i];
+  }
+  
+  rst = max(cnt, (rcnt + 1) / 2);
+  cout <<rst;  
+}
+
 int main(void) {
   ios::sync_with_stdio(0);
   cin.tie(0);
+
+  // boj2577();
+  boj1475();
   // insert_test();
   // erase_test();
 
