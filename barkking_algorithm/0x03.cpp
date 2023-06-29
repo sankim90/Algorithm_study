@@ -1,4 +1,3 @@
-
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -178,12 +177,191 @@ void boj1475()
   cout <<rst;  
 }
 
+void boj3273()
+{
+  vector <int> v(2000001);
+  vector <int> index_(100001);
+  int N;
+  int cnt = 0;
+  int X = 0;
+  int tmp = 0;
+  int i;
+  cin >> N;
+
+  // for(i=0; i<N; i++) //바킹독 솔루션
+  // {
+  //   cin >> v[i];
+  // }
+
+  // cin >> X;
+
+  // for(i=0; i<N; i++)
+  // {
+  //   if(X-v[i] > 0 && index_[X-v[i]]) // index가 -값이면 안되니까 X-v[i] > 0 검사
+  //     cnt++;
+  //   else
+  //     index_[v[i]] = true;
+  // }
+
+
+  // 내 코드
+  for(i=0; i<N; i++)
+  {
+    cin >> tmp;
+    index_[i] = tmp;
+    v[tmp] = tmp;
+  }
+
+  cin >> X;
+
+  for(i=0; i<N; i++)
+  {
+    if(X-index_[i] > 0 && (v[X-index_[i]] + v[index_[i]]) == X) 
+      cnt++;
+  }
+
+  cout <<cnt/2;
+
+}
+/*바킹독 솔루션
+ // -100 <= v && v <= 100 이므로 음수도 저장할 수 있는 공간을 배열에 추가
+  int N, v, a[201] = {};
+  cin >> N;
+
+  // 입력값을 배열에 저장
+  while(N--){
+    int t;
+    cin >> t;
+    // 음수도 인덱스로 접근하기 위해 기존 인덱스+100으로 배열에 저장 <- 이생각 했었는데 굳이 싶었음
+    a[t+100]++;
+  }
+
+  // v의 개수를 배열에서 확인
+  cin >> v;
+  cout << a[v+100];
+*/
+void boj10807()
+{
+  // arr[], V 의 범위는 -100 <= X <= 100
+  int N, X;
+  int cnt = 0;
+  vector <int> v(101);
+  cin >> N;
+
+  for(int i=0; i<N; i++)
+    cin >> v[i];
+
+  cin >> X;
+
+  for(int j=0; j<N; j++)
+  {
+    if(v[j] == X)
+      cnt++;
+  }
+
+  cout << cnt;
+}
+
+void boj13300() // N 전교생 숫자 K 방의 최대 수용인원, 0 여자 1 남자 / 학년
+{
+  int N, K;
+  int S, Grad;
+  int room1 = 0;
+  int room2 = 0;
+  vector <int> M_Grad(7);
+  vector <int> W_Grad(7);
+
+  cin >> N >> K;
+
+  for(int i=0; i<N; i++)
+  {
+    cin >> S >> Grad;
+    if(S)
+      M_Grad[Grad]++;
+    else
+      W_Grad[Grad]++;
+  }
+  
+  for(int j=1; j<7; j++)
+  {
+    if(M_Grad[j])
+    {
+      if(M_Grad[j]%K)
+        room1 += (M_Grad[j]/K)+1;
+      else
+        room1 += (M_Grad[j]/K);
+    }
+    
+    if(W_Grad[j])
+    {
+      if(W_Grad[j]%K)
+        room2 += (W_Grad[j]/K)+1;
+      else
+        room2 += (W_Grad[j]/K);
+    }
+  }
+
+  cout << room1 + room2;
+}
+
+void boj11328()
+{
+  int N;
+  char tmp1 = 0, tmp2 = 0;
+  
+  cin >> N;
+
+  string Str1, Str2;
+
+  // while(N--) 내코드 28ms 
+  // {
+  //   cin >> Str1 >> Str2;
+  //   sort(Str1.begin(), Str1.end());
+  //   sort(Str2.begin(), Str2.end());
+
+  //   if(Str1 == Str2)
+  //     cout << "Possible\n";
+  //   else
+  //     cout << "Impossible\n";
+  // }
+
+  while(N--) // 바킹독 8ms 
+  {
+    vector <int> V(30);
+    cin >> Str1 >> Str2;
+
+    for(auto i : Str1)
+      V[i-'a']++; // 배열 하나로 처리 하는게 아이디어
+    for(auto i : Str2)
+      V[i-'a']--; // 위와 같은 값이면 0으로 초기화, 아에 다른 값이면 -가 될것임
+
+    // 0이 아닌 배열의 요소가 있을 경우, 개수가 다른 문자가 존재하므로 false
+    bool isPossible = true;
+
+    for (int i : V){
+      if (i != 0) 
+      {
+        isPossible = false;
+        break;
+      }
+    }
+    if(isPossible) cout << "Possible\n";
+    else cout << "Impossible\n";
+  }
+
+}
+
 int main(void) {
   ios::sync_with_stdio(0);
   cin.tie(0);
 
   // boj2577();
-  boj1475();
+  // boj1475();
+  // boj3273();
+  // boj10807();
+  // boj13300();
+  boj11328();
+
   // insert_test();
   // erase_test();
 
