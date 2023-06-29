@@ -351,6 +351,23 @@ void boj11328()
 
 }
 
+void boj1919()
+{
+  vector <int> v(26);
+  string str1, str2;
+
+  cin >> str1 >> str2;
+
+  for(auto i : str1)
+    v[i-'a']++;
+  for(auto j : str2)
+    v[j-'a']--;
+
+  for(auto i : v)
+    cout << i << " ";
+  // cout << accumulate(v.begin(), v.end(), 0);
+}
+
 int main(void) {
   ios::sync_with_stdio(0);
   cin.tie(0);
@@ -360,7 +377,8 @@ int main(void) {
   // boj3273();
   // boj10807();
   // boj13300();
-  boj11328();
+  // boj11328();
+  boj1919();
 
   // insert_test();
   // erase_test();
