@@ -355,17 +355,18 @@ void boj1919()
 {
   vector <int> v(26);
   string str1, str2;
-
+  int rst = 0;
   cin >> str1 >> str2;
 
-  for(auto i : str1)
+  for(auto i : str1) //중복된 문자수
     v[i-'a']++;
-  for(auto j : str2)
-    v[j-'a']--;
-
+  for(auto i : str2) // a bb ccc dddd eeeee (15) / e dd ccc bbbb aaaaa (15) a = 4, b = 2, c = 0, d = 2, e = 4  --> 12
+    v[i-'a']--;
+  
   for(auto i : v)
-    cout << i << " ";
-  // cout << accumulate(v.begin(), v.end(), 0);
+    rst += abs(i);
+  
+  cout << rst;
 }
 
 int main(void) {
