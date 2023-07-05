@@ -124,7 +124,6 @@ void boj1158() // 7,3 // 1 2 3 4 5 6 7 -> 3 // 1 2 4 5 6 7 -> 6 // 1 2 4 5 7 -> 
         circle.push_back(i);
     
     auto ptr = circle.begin();
-    // ptr = circle.begin();
 
 
     while(!circle.empty())
