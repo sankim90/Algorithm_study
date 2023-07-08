@@ -128,35 +128,41 @@ void boj2493()
     int index=1;
     int prev; 
     int tmp;
-    cin >> N;
-
-    stack <int> stk;
-    stack <int> rst;
+    
+    // stack <int> stk;
+    queue <int> rst;
+    vector <int> stk(500001);
+    int ptr;
+    int i;
     // vector <int> rst(500001);
+    cin >> N;
+    ptr = N;
 
-    cin >> tmp;
-    stk.push(tmp);
+    for(i=0; i<N; i++)
+        cin >> stk[i];
 
-    for(int i=1; i<N; i++)
+    if(N == 1)
     {
-        
-        cin >> tmp;
-
-        if(stk.empty())
-        {
-            rst.push(0);
-        }
-        else if(stk.top() < tmp)
-        {
-            stk.pop();
-        }
-        else if(stk.top() >= tmp)
-        {
-            rst.push(stk.size());
-        }
-            // stk.push(tmp);
+        cout << "0\n";
+        return;
     }
 
+    // 2개이상이라고 확정하고 진행
+    prev = 1;
+    while(N<prev) // 6 9 5 7 4
+    {// 1 2 3 5
+        if(ptr == 0)
+            rst.push(0);
+        else if(stk[ptr] >= stk[prev])
+        {
+            rst.push(ptr+1);
+            ptr = prev;
+            prev++;
+        }
+        else
+            ptr--;
+        
+    }
 
     // stk_tmp = stk;
 
@@ -186,7 +192,7 @@ void boj2493()
 
     while(!rst.empty())
     {
-        cout << rst.top() << ' ';
+        cout << rst.front() << ' ';
         rst.pop();
     }
     cout <<'\n';
