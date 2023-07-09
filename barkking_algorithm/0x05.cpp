@@ -132,11 +132,10 @@ void boj2493()
     // stack <int> stk;
     queue <int> rst;
     vector <int> stk(500001);
-    int ptr;
+    int ptr = 0;
     int i;
     // vector <int> rst(500001);
     cin >> N;
-    ptr = N;
 
     for(i=0; i<N; i++)
         cin >> stk[i];
@@ -149,18 +148,26 @@ void boj2493()
 
     // 2개이상이라고 확정하고 진행
     prev = 1;
-    while(N<prev) // 6 9 5 7 4
+    rst.push(0);
+    while(prev<N) // 6 9 5 7 4
     {// 1 2 3 5
-        if(ptr == 0)
-            rst.push(0);
-        else if(stk[ptr] >= stk[prev])
+        if(stk[ptr] >= stk[prev])
         {
             rst.push(ptr+1);
             ptr = prev;
             prev++;
         }
-        else
-            ptr--;
+        else if(stk[ptr] < stk[prev])
+        {
+            if(ptr == 0)
+            {
+                rst.push(0);
+                ptr = prev;
+                prev++;
+            }
+            else
+                ptr--;
+        }
         
     }
 
