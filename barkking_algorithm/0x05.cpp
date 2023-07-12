@@ -124,58 +124,58 @@ void boj1874()
 
 void boj2493()
 {
-    int N;
-    int index=1;
-    int prev; 
-    int tmp;
+    // int N;
+    // int index=1;
+    // int prev; 
+    // int tmp;
     
-    // stack <int> stk;
-    queue <int> rst;
-    vector <int> stk(500001);
-    int ptr = 0;
-    int i;
-    // vector <int> rst(500001);
-    cin >> N;
+    // // stack <int> stk;
+    // queue <int> rst;
+    // vector <int> stk(500001);
+    // int ptr = 0;
+    // int i;
+    // // vector <int> rst(500001);
+    // cin >> N;
 
-    for(i=0; i<N; i++)
-        cin >> stk[i];
+    // for(i=0; i<N; i++)
+    //     cin >> stk[i];
 
-    if(N == 1)
-    {
-        cout << "0\n";
-        return;
-    }
+    // if(N == 1)
+    // {
+    //     cout << "0\n";
+    //     return;
+    // }
 
-    // 2개이상이라고 확정하고 진행
-    prev = 1;
-    rst.push(0);
-    while(prev<N) // 6 9 5 7 4
-    {// 1 2 3 5
-        if(stk[ptr] >= stk[prev])
-        {
-            rst.push(ptr+1);
-            ptr = prev;
-            prev++;
-        }
-        else if(stk[ptr] < stk[prev])
-        {
-            if(ptr == 0)
-            {
-                rst.push(0);
-                ptr = prev;
-                prev++;
-            }
-            else
-                ptr--;
-        }
+    // 2개이상이라고 확정하고 진행  // 시간초과 
+    // prev = 1;                      
+    // rst.push(0);
+    // while(prev<N) // 6 9 5 7 4
+    // {// 1 2 3 5
+    //     if(stk[ptr] >= stk[prev])
+    //     {
+    //         rst.push(ptr+1);
+    //         ptr = prev;
+    //         prev++;
+    //     }
+    //     else if(stk[ptr] < stk[prev])
+    //     {
+    //         if(ptr == 0)
+    //         {
+    //             rst.push(0);
+    //             ptr = prev;
+    //             prev++;
+    //         }
+    //         else
+    //             ptr--;
+    //     }
         
-    }
+    // }
 
     // stk_tmp = stk;
 
     // prev = stk.top();
     
-    // while(!stk.empty())   // 6 9 5 7 4 -> 시간초과
+    // while(!stk.empty())   // 6 9 5 7 4 -> 시간초과 again
     // {                          // 
     //     //                     // prev = 4, top = 7 // prev = 7, top = 5 // prev 7, top 9 // prev 5 top 9
     //     stk.pop();
@@ -197,12 +197,93 @@ void boj2493()
     //     }
     // }
 
-    while(!rst.empty())
-    {
-        cout << rst.front() << ' ';
-        rst.pop();
+    // while(!rst.empty())
+    // {
+    //     cout << rst.front() << ' ';
+    //     rst.pop();
+    // }
+    // cout <<'\n';
+
+
+
+    //솔루션 https://godsang.tistory.com/entry/C-BOJ-2493-stack-%EA%B3%BC-pair%EC%9D%98-%EC%82%AC%EC%9A%A9
+    /*
+    K = 6 9 5 7 4
+
+    0. STK[{100만, 0}, }
+
+    for
+    1. 100만 < 6 False
+    -> cout 0
+    -> push STK[{100만, 0}, {6, 1}]
+
+    2. 6 < 9 True
+    -> pop STK [{100만, 0}]
+    -> cout 0
+    -> push STK [{100만, 0}, {9, 2}]
+
+    3. 9 < 5 False
+    -> cout 2
+    -> push STK [{100만, 0}, {9, 2}, {5, 3}]
+
+    4. 5 < 7 True
+    -> pop STK [{100만, 0}, {9, 2}]
+    -> cout 2
+    -> push STK [{100만, 0}, {9, 2}, {7,4}]
+
+    5. 7 < 4 False
+    -> cout 4
+    -> push STK [{100만, 0}, {9, 2}, {7,4}, {4,5}]
+
+    done
+    */
+
+    int n, k;
+    int max = 100000001;
+    stack<pair<int, int>> stk;
+    cin >> n;
+    stk.push({max, 0});
+    for(int i = 1; i <= n ; i++) {
+        cin >> k;
+        while(stk.top().first < k) {
+            stk.pop();
+        }
+        cout << stk.top().second << " ";
+        stk.push({k, i});
     }
-    cout <<'\n';
+
+}
+
+void boj6198()
+{
+    #define MAX 80001
+    int N, i;
+    
+    int ptr = 1;
+    int head = 0;
+    unsigned long long rst = 0;
+    vector <int> V(MAX);
+    cin >> N;
+
+    for(i = 0; i < N; i++)
+        cin >> V[i];
+    V[N] = 1000000001;
+
+    for(i = 0; i < N; i++)
+    {
+        while(V[head] > V[ptr])
+        {
+            rst++;
+            ptr++;
+        }
+        if(V[head] <= V[ptr])
+        {
+            head++;
+            ptr = head + 1;
+        }
+    }
+
+    cout << rst;
 
 }
 
@@ -214,5 +295,6 @@ int main()
     // boj10828();
     // boj10773();
     // boj1874();
-    boj2493();
+    // boj2493();
+    boj6198();
 }
