@@ -256,6 +256,7 @@ void boj2493()
 
 void boj6198()
 {
+    /* 시간초과 O(N(N+1)/2)
     #define MAX 80001
     int N, i;
     
@@ -284,7 +285,32 @@ void boj6198()
     }
 
     cout << rst;
+    */
 
+    stack <int> stk; //https://programforlife.tistory.com/53
+    int N;
+    int rst = 0;
+    cin >> N;
+    
+    while(N--)
+    {
+        int tmp;
+        cin >> tmp;
+
+        if(stk.empty())
+        {
+            stk.push(tmp);
+            continue;
+        }
+
+        while(!stk.empty() && stk.top() <= tmp)
+            stk.pop();
+
+        rst += stk.size();
+        stk.push(tmp);
+    }
+
+    cout << rst;
 }
 
 int main()
