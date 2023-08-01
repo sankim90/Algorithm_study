@@ -112,6 +112,22 @@ void boj1021()
     cout << cnt1;
 }
 
+void parse(string& tmp, deque<int>& d){
+  int cur = 0;
+  for(int i = 1; i+1 < tmp.size(); i++)
+  {
+    if(tmp[i] == ','){
+      d.push_back(cur);
+      cur = 0;
+    }
+    else{
+      cur = 10 * cur + (tmp[i] - '0');
+    }
+  }
+  if(cur != 0)
+    d.push_back(cur);
+}
+
 void boj5430()
 {
     int T;
@@ -120,18 +136,18 @@ void boj5430()
 
     while(T--)
     {
-        string str;
+        string str; //, tmp;
         deque <int> dq;
         int rev=0;
         int err=0;
-        int N;
-
+        int N, tmp;
+        
         cin >> str;
         cin >> N;
 
+        // parse(tmp, dq);
         for(int i=0; i<N; i++)
-        {
-            int tmp;
+        {   
             cin >> tmp;
             dq.push_back(tmp);
         }
@@ -155,43 +171,40 @@ void boj5430()
             else
             {
                 err=1;
-                cout << "error\n";
                 break;
             }
         }
 
         if(err)
-            continue;
-        // if(dq.empty())
-        //     continue;
-
-        if(!rev)
-        {
-            cout << '[';
-            while(!dq.empty())
-            {
-                cout << dq.front();
-                dq.pop_front();
-                if(!dq.empty())
-                    cout << ',';
-            }
-            cout << "]\n";
-        }
+            cout << "error\n";
         else
         {
-            cout << '[';
-            while(!dq.empty())
+            if(!rev)
             {
-                cout << dq.back();
-                dq.pop_back();
-                if(!dq.empty())
-                    cout << ',';
+                cout << '[';
+                while(!dq.empty())
+                {
+                    cout << dq.front();
+                    dq.pop_front();
+                    if(!dq.empty())
+                        cout << ',';
+                }
+                cout << "]\n";
             }
-            cout << "]\n";
+            else
+            {
+                cout << '[';
+                while(!dq.empty())
+                {
+                    cout << dq.back();
+                    dq.pop_back();
+                    if(!dq.empty())
+                        cout << ',';
+                }
+                cout << "]\n";
+            }
         }
-        
     }
-
 }
 
 int main()
@@ -201,16 +214,5 @@ int main()
 
     // boj10866();
     // boj1021();
-    boj5430();
-
-    // deque <int> dq;
-    // int i;
-
-    // for(i=1; i<5; i++)
-    //     dq.push_back(i);
-    
-    // auto itr = dq.end();
-    
-    // while(i--)
-    //     cout << *itr--;
+    // boj5430();
 }
