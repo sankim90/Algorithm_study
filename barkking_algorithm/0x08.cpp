@@ -88,12 +88,61 @@ void boj10799() // 내 풀이, 아래와 같에 몽땅 stack에 안넣고 string
     cout << rst << '\n';
 }
 
+void boj2504()
+{
+    stack <char> stk;
+    string str;
+    int rst = 1;
+
+    cin >> str;
+
+    for(int i=0; i<str.length(); i++)
+    {
+        if(str[i] == '(' || str[i] == '[')
+            stk.push(str[i]);
+        else if(str[i] == ')')
+        {
+            if(str[i-1] == '(')
+            {
+                stk.pop();
+                rst = rst +2;
+            }
+            else
+            {
+                rst = 0;
+                break;
+            }
+        }
+        else if(str[i] == ']')
+        {
+            if(str[i-1] == '[')
+            {
+                stk.pop();
+                rst = rst -1 + 3;
+            }
+            else if(str[i-1] == ')')
+            {
+                
+            }
+            else
+            {
+                rst = 0;
+                break;
+            }
+        }
+    }
+    
+
+    cout << rst << '\n';
+}
+
 int main()
 {
     ios::sync_with_stdio(0);
     cin.tie(0);
 
     // boj4949();
-    boj10799();
+    // boj10799();
+    boj2504();
 
 }
