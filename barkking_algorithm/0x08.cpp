@@ -91,48 +91,37 @@ void boj10799() // 내 풀이, 아래와 같에 몽땅 stack에 안넣고 string
 void boj2504()
 {
     stack <char> stk;
+    stack <char> cal;
     string str;
     int rst = 1;
 
     cin >> str;
 
-    for(int i=0; i<str.length(); i++)
+    for(int i=0; i<str.length(); i++) // ()(())
     {
-        if(str[i] == '(' || str[i] == '[')
+        if(str[i] == '(')
             stk.push(str[i]);
-        else if(str[i] == ')')
+        else if(!stk.empty() && str[i] == ')')
         {
-            if(str[i-1] == '(')
+            if(stk.top() == '(')
+                rst = rst * 2;
+            stk.pop();
+
+            if(stk.empty())
             {
-                stk.pop();
-                rst = rst +2;
-            }
-            else
-            {
-                rst = 0;
-                break;
-            }
-        }
-        else if(str[i] == ']')
-        {
-            if(str[i-1] == '[')
-            {
-                stk.pop();
-                rst = rst -1 + 3;
-            }
-            else if(str[i-1] == ')')
-            {
-                
-            }
-            else
-            {
-                rst = 0;
-                break;
+                cal.push(rst);
+                rst = 1;
             }
         }
     }
     
-
+    rst = 0;
+    while (!cal.empty())
+    {
+        rst += cal.top();
+        cal.pop();
+    }
+    
     cout << rst << '\n';
 }
 
