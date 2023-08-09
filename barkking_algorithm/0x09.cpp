@@ -98,12 +98,61 @@ void boj2178()
     cout << dist[n-1][m-1]+1;
 }
 
+int board[1002][1002];
+int dist[1002][1002];
+
+void boj7576()
+{
+    int n, m;
+    int i, j;
+    int rst=0;
+    queue <pair<int, int>> Q;
+
+    cin >> n >> m; // 열 행
+    for(i=0; i<m; i++)
+    {
+        for(j=0; j<n; j++)
+        {
+            cin >> board[i][j];
+            if(board[i][j] == 1)
+                Q.push({i,j});
+            else if(board[i][j] == 0)
+                dist[i][j] = -1;
+        }
+    }
+
+    while (!Q.empty())
+    {
+        auto cur = Q.front();
+        Q.pop();
+        for(int dir=0; dir<4; dir++)
+        {
+            int nx = cur.first  + dx[dir];
+            int ny = cur.second + dy[dir];
+            if(nx<0 || nx>=m || ny<0 || ny>=n) continue;
+            if(dist[nx][ny]>=0) continue;
+            dist[nx][ny] = dist[cur.first][cur.second]+1;
+            rst = max(dist[nx][ny], rst);
+            Q.push({nx,ny});
+        }
+    }
+
+    for(i=0; i<m; i++)
+        for(j=0; j<n; j++)
+            if(dist[i][j] == -1)
+            {
+                cout << "-1\n";
+                return;
+            }
+    cout << rst;
+}
+
 int main()
 {
     ios::sync_with_stdio(0);
     cin.tie(0);
 
     // boj1926();
-    boj2178();
-
+    // boj2178();
+    boj7576();
 }
