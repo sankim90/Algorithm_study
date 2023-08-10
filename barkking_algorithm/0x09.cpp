@@ -147,6 +147,65 @@ void boj7576()
     cout << rst;
 }
 
+char board_4179[1002][1002];
+
+void boj4179()
+{
+    int n, m;
+    int i, j;
+    int rst = 0;
+
+    cin >> n >> m;
+    queue<tuple<int, int, char>> Q;
+
+    for(i=0; i<n; i++)
+    {
+        for(j=0; j<m; j++)
+        {
+            cin >> board_4179[i][j];
+            if(board_4179[i][j] == 'J')
+                Q.push({i,j, 'J'});
+            else if(board_4179[i][j] == 'F')
+                Q.push({i,j, 'F'});
+            else if(board_4179[i][j] == '.')
+                dist[i][j] = -1;
+        }
+    }
+    // get<0>(Q.front)
+    //J는 F가 visit한곳을 접근 못함, F는 상관없이 가능
+    //J와 F를 큐에 넣고 F의 dist가 J보다 크면 임파서블
+    // or J 와 F로 BFS 진행후 J가 0이면 임파서블
+    while (!Q.empty())
+    {
+        auto cur = Q.front(); 
+        Q.pop();
+
+        for(int dir=0; dir<4; dir++)
+        {
+            int nx = get<0>(cur) + dx[dir];
+            int ny = get<1>(cur) + dy[dir];
+            if(board_4179[nx][ny] =='#' || board_4179[nx][ny] == 'F') continue;
+            dist[nx][ny] = dist[get<0>(cur)][get<1>(cur)]+1;
+            if(get<2>(cur) == 'F')
+            {
+                board_4179[nx][ny] = 'F';
+                Q.push({nx, ny, 'F'});
+            }
+            else if(get<2>(cur) == 'J')
+            {
+                if(board_4179[nx][ny] == 0)
+                {
+                    cout << dist[nx][ny];
+                    return;
+                }
+                board_4179[nx][ny] = 'J';
+                Q.push({nx, ny, 'J'});
+            }
+        }
+    }
+    cout << "IMPOSSIBLE\n";
+}
+
 int main()
 {
     ios::sync_with_stdio(0);
@@ -154,5 +213,6 @@ int main()
 
     // boj1926();
     // boj2178();
-    boj7576();
+    // boj7576();
+    boj4179();
 }
