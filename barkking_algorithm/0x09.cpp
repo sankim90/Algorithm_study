@@ -148,7 +148,8 @@ void boj7576()
 }
 
 char board_4179[1002][1002];
-
+int dist1[1002][1002]; // 불
+int dist2[1002][1002]; // 지훈
 void boj4179()
 {
     int n, m;
@@ -156,51 +157,66 @@ void boj4179()
     int rst = 0;
 
     cin >> n >> m;
-    queue<tuple<int, int, char>> Q;
-
+    queue<pair<int, int>> FQ; // 불
+    queue<pair<int, int>> JQ; // 지훈이
+    
     for(i=0; i<n; i++)
     {
+        fill(dist1[i], dist1[i]+m, -1);
+        fill(dist2[i], dist2[i]+m, -1);
+        cin >> board_4179[i];
+    }
+
+    for(i=0; i<n; i++)
         for(j=0; j<m; j++)
         {
-            cin >> board_4179[i][j];
-            if(board_4179[i][j] == 'J')
-                Q.push({i,j, 'J'});
-            else if(board_4179[i][j] == 'F')
-                Q.push({i,j, 'F'});
-            else if(board_4179[i][j] == '.')
-                dist[i][j] = -1;
+            if(board_4179[i][j]=='F')
+            {
+                FQ.push({i,j});
+                dist1[i][j] = 0;
+            }
+            else if(board_4179[i][j]=='J')
+            {
+                JQ.push({i,j});
+                dist2[i][j] = 0;
+            }
         }
-    }
-    // get<0>(Q.front)
-    //J는 F가 visit한곳을 접근 못함, F는 상관없이 가능
-    //J와 F를 큐에 넣고 F의 dist가 J보다 크면 임파서블
-    // or J 와 F로 BFS 진행후 J가 0이면 임파서블
-    while (!Q.empty())
+
+    
+    while (!FQ.empty()) // 불에 대한 BFS 먼저 돌림
     {
-        auto cur = Q.front(); 
-        Q.pop();
+        auto cur = FQ.front(); 
+        FQ.pop();
 
         for(int dir=0; dir<4; dir++)
         {
-            int nx = get<0>(cur) + dx[dir];
-            int ny = get<1>(cur) + dy[dir];
-            if(board_4179[nx][ny] =='#' || board_4179[nx][ny] == 'F') continue;
-            dist[nx][ny] = dist[get<0>(cur)][get<1>(cur)]+1;
-            if(get<2>(cur) == 'F')
+            int nx = cur.first  + dx[dir];
+            int ny = cur.second + dy[dir];
+            if(nx<0 || nx>=n || ny<0 || ny>=m) continue;
+            if(dist1[nx][ny]>=0 || board_4179[nx][ny] == '#') continue;
+            FQ.push({nx, ny});
+            dist1[nx][ny] = dist1[cur.first][cur.second]+1;
+        }
+    }
+
+    while (!JQ.empty()) // 지훈이 BFS
+    {
+        auto cur = JQ.front(); 
+        JQ.pop();
+
+        for(int dir=0; dir<4; dir++)
+        {
+            int nx = cur.first  + dx[dir];
+            int ny = cur.second + dy[dir];
+            if(nx<0 || nx>=n || ny<0 || ny>=m) //m,n 밖이면 즉 탈출이다~
             {
-                board_4179[nx][ny] = 'F';
-                Q.push({nx, ny, 'F'});
+                cout << dist2[cur.first][cur.second]+1;
+                return;
             }
-            else if(get<2>(cur) == 'J')
-            {
-                if(board_4179[nx][ny] == 0)
-                {
-                    cout << dist[nx][ny];
-                    return;
-                }
-                board_4179[nx][ny] = 'J';
-                Q.push({nx, ny, 'J'});
-            }
+            if(dist2[nx][ny]>=0 || board_4179[nx][ny] == '#') continue;
+            if(dist1[nx][ny] != -1 && dist1[nx][ny] <= dist2[cur.first][cur.second]+1) continue; // dist1(불) <= dist2(지훈)는 지훈이가 더 늦었다는 것임(값이 클수록 늦게 도착)
+            JQ.push({nx, ny});                                                                   // #(벽)은 계산에 포함되면 안되므로 != -1 조건 추가
+            dist2[nx][ny] = dist2[cur.first][cur.second]+1;
         }
     }
     cout << "IMPOSSIBLE\n";
