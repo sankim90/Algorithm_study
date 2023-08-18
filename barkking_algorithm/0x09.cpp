@@ -222,6 +222,191 @@ void boj4179()
     cout << "IMPOSSIBLE\n";
 }
 
+// char board_1697[100000];
+int dist_1697[100002];
+int dx_1697[3] = {-1, 1, 2};
+
+void boj1697()
+{
+    queue<int> Q;
+    int N, K;
+    int nx;
+    cin >> N >> K;
+    if(N >= K) // 순간이동은 양의 방향으로만 가능하므로 이 경우 -1으로만 이동함
+    {
+        cout << N-K;
+        return;
+    }
+
+    fill(dist_1697, dist_1697+100002, -1);
+
+    Q.push(N);
+    dist_1697[N] = 0;
+
+    while(!Q.empty())
+    {
+        auto cur = Q.front(); Q.pop();
+        for(int dir=0; dir<3; dir++)
+        {
+            if(dir==2)
+                nx = cur * dx_1697[dir];
+            else
+                nx = cur + dx_1697[dir];
+
+            if(nx<0 || nx>100000) continue;
+            if(dist_1697[nx]>=0) continue;
+            if(nx == K)
+            {
+                cout << dist_1697[cur]+1;
+                return;
+            }
+            Q.push(nx);
+            dist_1697[nx] = dist_1697[cur]+1;
+        }
+    }
+}
+
+void boj1012()
+{
+    int T, N, M, K;
+    int x, y;
+    int Piccnt;
+
+    cin >> T;
+    
+    for(int l=0; l<T; l++)
+    {
+        queue<pair<int, int>> Q;
+        bool board[52][52] = {0, };
+        bool vis[52][52] = {0, };
+        Piccnt = 0;
+        cin >> M >> N >> K; // 열 행
+
+        for(int p=0; p<K; p++)
+        {
+            cin >> y >> x;
+            board[x][y] = 1;
+        }
+
+        for(int i=0; i<N; i++)
+        {
+            for(int j=0; j<M; j++)
+            {
+                if(board[i][j] && vis[i][j] == 0)
+                {
+                    Q.push({i, j});
+                    vis[i][j] = 1;
+                
+                    while(!Q.empty())
+                    {
+                        auto cur = Q.front(); Q.pop();
+                        for(int dir=0; dir<4; dir++)
+                        {
+                            int nx = cur.first  + dx[dir];
+                            int ny = cur.second + dy[dir];
+                            if(nx<0 || nx>=N || ny<0 || ny>=M) continue;
+                            if(vis[nx][ny] || board[nx][ny] == 0) continue;
+                            Q.push({nx,ny});
+                            vis[nx][ny] = 1;
+                        }
+                    }
+                    Piccnt++;
+                }
+            }
+        }
+
+        cout << Piccnt << '\n';
+    }
+}
+
+void boj10026()
+{
+    int N;
+    char board1[101][101]={0, };
+    char board2[101][101]={0, };
+    bool vis1[101][101]={0, };
+    bool vis2[101][101]={0, };
+    int Piccnt1 = 0; // RGB
+    int Piccnt2 = 0; // RG+B
+    
+    queue<pair<int, int>> Q;
+    cin >> N;
+    // board 2개 만든다 V
+    // 2번 보드의 G를 R로 바꾼다
+
+    for(int i=0; i<N; i++)
+    {
+        for(int j=0; j<N; j++)
+        {
+            cin >> board1[i][j];
+            board2[i][j] = board1[i][j];
+            if(board1[i][j] == 'G')
+                board2[i][j] = 'R';
+        }
+    }
+
+    for(auto k:{'R', 'G', 'B'})
+    {
+        for(int i=0; i<N; i++)
+        {
+            for(int j=0; j<N; j++)
+            {
+                if(board1[i][j] == k && vis1[i][j] == 0) 
+                {
+                    Q.push({i,j});
+                    vis1[i][j]=1;
+                    while(!Q.empty())
+                    {
+                        auto cur = Q.front(); Q.pop();
+                        for(int dir=0; dir<4; dir++)
+                        {
+                            int nx = cur.first  + dx[dir];
+                            int ny = cur.second + dy[dir];
+                            if(nx<0 || nx>=N || ny<0 || ny>=N) continue;
+                            if(vis1[nx][ny] || board1[nx][ny] != board1[cur.first][cur.second])  continue;
+                            Q.push({nx, ny});
+                            vis1[nx][ny] = 1;
+                        }
+                    }
+                    Piccnt1++;
+                }
+            }
+        }
+    }
+
+    for(auto k:{'R', 'B'})
+    {
+        for(int i=0; i<N; i++)
+        {
+            for(int j=0; j<N; j++)
+            {
+                if(board2[i][j] == k && vis2[i][j] == 0) 
+                {
+                    Q.push({i,j});
+                    vis2[i][j]=1;
+                    while(!Q.empty())
+                    {
+                        auto cur = Q.front(); Q.pop();
+                        for(int dir=0; dir<4; dir++)
+                        {
+                            int nx = cur.first  + dx[dir];
+                            int ny = cur.second + dy[dir];
+                            if(nx<0 || nx>=N || ny<0 || ny>=N) continue;
+                            if(vis2[nx][ny] || board2[nx][ny] != board2[cur.first][cur.second])  continue;
+                            Q.push({nx, ny});
+                            vis2[nx][ny] = 1;
+                        }
+                    }
+                    Piccnt2++;
+                }
+            }
+        }
+    }
+
+    cout << Piccnt1 << ' ' << Piccnt2 << '\n';
+
+}
+
 int main()
 {
     ios::sync_with_stdio(0);
@@ -230,5 +415,9 @@ int main()
     // boj1926();
     // boj2178();
     // boj7576();
-    boj4179();
+    // boj4179();
+    // boj1697();
+    // boj1012();
+    boj10026();
+
 }
