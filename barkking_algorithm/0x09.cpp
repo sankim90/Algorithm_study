@@ -215,7 +215,7 @@ void boj4179()
             }
             if(dist2[nx][ny]>=0 || board_4179[nx][ny] == '#') continue;
             if(dist1[nx][ny] != -1 && dist1[nx][ny] <= dist2[cur.first][cur.second]+1) continue; // dist1(불) <= dist2(지훈)는 지훈이가 더 늦었다는 것임(값이 클수록 늦게 도착)
-            JQ.push({nx, ny});                                                                   // #(벽)은 계산에 포함되면 안되므로 != -1 조건 추가
+            JQ.push({nx, ny});                                                                   // dist1[nx][ny] != -1 : 보드에 불이 없는 경우가 있다! 예외처리
             dist2[nx][ny] = dist2[cur.first][cur.second]+1;
         }
     }
@@ -407,6 +407,190 @@ void boj10026()
 
 }
 
+int board_7569[103][103][103];
+int dist_7569[103][103][103];
+int dx_7569[6] = {1, 0, -1, 0, 0, 0}; // 행
+int dy_7569[6] = {0, 1, 0, -1, 0, 0}; // 열
+int dz_7569[6] = {0, 0, 0, 0, 1, -1}; // 높이
+
+void boj7569()
+{
+    int M, N, H;
+    int i, j, k;
+    int rst = 0;
+    queue<tuple<int, int, int>> Q;
+    
+    cin >> M >> N >> H; //  열 행 높이
+
+    for(k=0; k<H; k++)
+        for(i=0; i<N; i++)
+            for(j=0; j<M; j++)
+            {
+                dist_7569[k][i][j] = -1;
+                cin >> board_7569[k][i][j];
+                if(board_7569[k][i][j] == 1)
+                {
+                    Q.push({k,i,j});
+                    dist_7569[k][i][j] = 0;
+                }
+            }
+
+
+    while (!Q.empty())
+    {
+        auto cur = Q.front(); Q.pop();
+        
+        for(int dir=0; dir<6; dir++)
+        {
+            int nx = get<1>(cur) + dx_7569[dir];
+            int ny = get<2>(cur) + dy_7569[dir];
+            int nz = get<0>(cur) + dz_7569[dir];
+            if(nx<0 || nx>=N || ny<0 || ny>=M || nz<0 || nz>=H) continue;
+            if(board_7569[nz][nx][ny] != 0 || dist_7569[nz][nx][ny]>=0) continue;
+            Q.push({nz, nx, ny});
+            dist_7569[nz][nx][ny] = dist_7569[get<0>(cur)][get<1>(cur)][get<2>(cur)] + 1;
+            rst = max(dist_7569[nz][nx][ny], rst);
+        }
+    }
+            
+
+    for(k=0; k<H; k++)
+        for(i=0; i<N; i++)
+            for(j=0; j<M; j++)
+            {
+                if(board_7569[k][i][j] == 0 && dist_7569[k][i][j] == -1)
+                {
+                    cout << "-1\n";
+                    return;
+                }
+            }
+    
+    cout << rst;
+}
+
+// int board_7562[305][305];
+int dist_7562[305][305];
+int dx_7562[8] = {1, 2,  2,  1, -1, -2, -2, -1}; // 행
+int dy_7562[8] = {2, 1, -1, -2, -2, -1,  1,  2}; // 열
+
+void boj7562()
+{
+    int TC, l;
+    int x, y;
+    int tar_x, tar_y;
+    queue<pair<int, int>> Q;
+    cin >> TC;
+
+    for(int T=0; T<TC; T++)
+    {
+        cin >> l;
+        cin >> x >> y;
+        cin >> tar_x >> tar_y;
+
+        for(int i=0; i<l; i++)
+            fill(dist_7562[i], dist_7562[i]+l, -1);
+
+        Q.push({x, y});
+        dist_7562[x][y] = 0;
+        while(!Q.empty())
+        {
+            auto cur = Q.front(); Q.pop();
+            for(int dir=0; dir<8; dir++)
+            {
+                int nx = cur.first  + dx_7562[dir];
+                int ny = cur.second + dy_7562[dir];
+                if(nx<0 || nx>=l || ny<0 || ny>=l) continue;
+                if(dist_7562[nx][ny]>=0) continue;
+                Q.push({nx, ny});
+                dist_7562[nx][ny] = dist_7562[cur.first][cur.second] + 1;
+            }
+        }
+        cout << dist_7562[tar_x][tar_y] << '\n';
+    }
+}
+
+char board_5427[1002][1002];
+int distF_5427[1002][1002];
+int distS_5427[1002][1002];
+
+void boj5427()
+{
+    int TC, w, h;
+    int die;
+    queue<pair<int, int>> FQ;
+    queue<pair<int, int>> SQ;
+
+    cin >> TC;
+
+    for(int T=0; T<TC; T++)
+    {
+        cin >> w >> h;
+        for(int l=0; l<h; l++)
+        {
+            fill(distF_5427[l], distF_5427[l]+w, -1);
+            fill(distS_5427[l], distS_5427[l]+w, -1);
+        }
+        
+        for(int i=0; i<h; i++)
+            for(int j=0; j<w; j++)
+            {
+                cin >> board_5427[i][j];
+                if(board_5427[i][j] == '@')
+                {
+                    SQ.push({i,j});
+                    distS_5427[i][j] = 0;
+                }
+                else if(board_5427[i][j] == '*')
+                {
+                    FQ.push({i,j});
+                    distF_5427[i][j] = 0;
+                }
+            }
+        die = 1;
+        while(!FQ.empty())
+        {
+            auto cur = FQ.front(); FQ.pop();
+            for(int dir=0; dir<4; dir++)
+            {
+                int nx = cur.first  + dx[dir];
+                int ny = cur.second + dy[dir];
+                if(nx<0 || nx>=h || ny<0 || ny>=w) continue;
+                if(distF_5427[nx][ny]>=0 || board_5427[nx][ny]=='#') continue;
+                FQ.push({nx,ny});
+                distF_5427[nx][ny] = distF_5427[cur.first][cur.second] + 1;
+            }
+        }
+
+        while(!SQ.empty())
+        {
+            if(!die)
+            {
+                while (!SQ.empty())
+                    SQ.pop();
+                break;
+            }
+            auto cur = SQ.front(); SQ.pop();
+            for(int dir=0; dir<4; dir++)
+            {
+                int nx = cur.first  + dx[dir];
+                int ny = cur.second + dy[dir];
+                if(nx<0 || nx>=h || ny<0 || ny>=w)
+                {
+                    cout << distS_5427[cur.first][cur.second]+1 << '\n';
+                    die = 0;
+                    break;
+                }
+                if(board_5427[nx][ny] =='#' || distS_5427[nx][ny] >= 0) continue;
+                if(distF_5427[nx][ny] != -1 && distF_5427[nx][ny] <= distS_5427[cur.first][cur.second] + 1)  continue;
+                SQ.push({nx, ny});              // distF_5427[nx][ny] != -1 : 보드에 불이 없는 경우가 있다! 예외처리
+                distS_5427[nx][ny] = distS_5427[cur.first][cur.second] + 1;
+            }
+        }
+        if(die)
+            cout << "IMPOSSIBLE\n";
+    }
+}
+
 int main()
 {
     ios::sync_with_stdio(0);
@@ -418,6 +602,9 @@ int main()
     // boj4179();
     // boj1697();
     // boj1012();
-    boj10026();
+    // boj10026();
+    // boj7569();
+    // boj7562();
+    boj5427();
 
 }
