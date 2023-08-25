@@ -591,6 +591,115 @@ void boj5427()
     }
 }
 
+char board_2206[1002][1002];
+int dist_2206[1002][1002][2];
+// dist_2206[x][y][0] : 벽을 하나도 부수지 않고 (x,y)까지 오는데 걸리는 비용
+// dist_2206[x][y][1] : 벽을 하나만 부수고 (x,y)까지 오는데 걸리는 비용, (x,y)가 벽이라서 부수는 경우 포함
+/*
+void boj2206_san() // 내 풀이, 완전 탐색으로 하니까 시간초과남 ㅠㅠ
+{
+    int M, N;
+    int i, j;
+    int crash = 1;
+    int cnt = 0;
+    int rst=-1;
+    cin >> M >> N;
+    queue<pair<int, int>> Q;
+    
+    for(i=0; i<M; i++)
+        for(j=0; j<N; j++)
+        {
+            cin >> board_2206[i][j];
+            if(board_2206[i][j] == '1')
+                cnt++;
+        }
+
+    for(i=0; i<cnt; i++)
+    {
+        for(j=0; j<M; j++)
+            fill(dist_2206[j], dist_2206[j]+N, -1);
+
+        Q.push({0, 0});
+        dist_2206[0][0] = 1;
+        crash = 1;
+        while(!Q.empty())
+        {
+            auto cur = Q.front(); Q.pop();
+            for(int dir=0; dir<4; dir++)
+            {
+                int nx = cur.first  + dx[dir];
+                int ny = cur.second + dy[dir];
+                if(nx<0 || nx>=M || ny<0 || ny>=N) continue;
+                if(dist_2206[nx][ny]>=0 || board_2206[nx][ny] == '2') continue;
+                if(board_2206[nx][ny]=='1')
+                {
+                    if(crash)
+                    {
+                        board_2206[nx][ny] = '2';
+                        crash = 0;
+                    }
+                    else 
+                        continue;
+                }
+                Q.push({nx,ny});
+                dist_2206[nx][ny] = dist_2206[cur.first][cur.second] + 1;
+            }
+        }
+    }
+
+    rst = max(dist_2206[M-1][N-1], rst);
+    cout << rst;
+
+}
+*/
+void boj2206() // 로직 설명: https://bloodstrawberry.tistory.com/305
+{
+    int M, N;
+    int i, j;
+    int rst=-1;
+    cin >> N >> M;
+    
+    for(i=0; i<N; i++)
+        for(j=0; j<M; j++)
+        {
+            cin >> board_2206[i][j];
+            dist_2206[i][j][0] = dist_2206[i][j][1] = -1;
+        }
+
+    dist_2206[0][0][0] = dist_2206[0][0][1] = 1;
+    queue<tuple<int, int, int>> Q;
+    Q.push({0,0,0});
+
+    while(!Q.empty())
+    {
+        int cur_x, cur_y, crash;
+        tie(cur_x, cur_y, crash) = Q.front();
+        if(cur_x == N-1 && cur_y == M-1)
+        {
+            cout << dist_2206[cur_x][cur_y][crash];
+            return;
+        }
+        Q.pop();
+        for(int dir=0; dir<4; dir++)
+        {
+            int nx = cur_x + dx[dir];
+            int ny = cur_y + dy[dir];
+            if(nx<0 || nx>=N || ny<0 || ny>=M) continue;
+            if(board_2206[nx][ny] == '0' && dist_2206[nx][ny][crash] == -1) // 깬놈이랑 안깬놈이 crash에 따라 구분되어 들어간다.
+            {
+                Q.push({nx, ny, crash});    // crash가 0이면서 Q에 들어간 애들은 독립적으로 벽을 한번 깰 수 있다는걸 기억해야한다.
+                dist_2206[nx][ny][crash] = dist_2206[cur_x][cur_y][crash]+1; // 모든 crash 값을 고려한 코드
+            }
+            if(!crash && board_2206[nx][ny] == '1' && dist_2206[nx][ny][1] == -1) // 핵심, 벽 한번도 안깨고, 다음이 벽이면
+            {      
+                dist_2206[nx][ny][1] = dist_2206[cur_x][cur_y][0]+1; // 벽을 깬 거리는 안깬거리 + 1
+                Q.push({nx, ny, 1}); // 벽을 깬 자리라는것을 "1" 알려주고 Q에 넣는다, 애는 for문을 돌때 다시 !crash 조건으로 들어가지 못한다!
+            }   // 결국 내가 최초로 생각한 벽 한번도 안깬 BFS, 한번 깬 BFS를 돌리고 난 후, dist[N-1][M-1]을 출력하는것이 맞음, 난 근데 구현을 못했음.
+        }
+    }
+    cout <<-1;
+}
+
 int main()
 {
     ios::sync_with_stdio(0);
@@ -605,6 +714,7 @@ int main()
     // boj10026();
     // boj7569();
     // boj7562();
-    boj5427();
-
+    // boj5427();
+    // boj2206_san();
+    boj2206();
 }
