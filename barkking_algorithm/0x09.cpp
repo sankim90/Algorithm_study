@@ -700,6 +700,39 @@ void boj2206() // 로직 설명: https://bloodstrawberry.tistory.com/305
     cout <<-1;
 }
 
+int arr[100005];
+int n;
+// iscycle 함수는 위에서 언급한 것과 같이 N번 이내에 자기 자신으로 돌아오는지 
+// 여부를 이용해 idx번째 학생이 사이클에 들어있는지를 판단하는 함수입니다.
+bool iscycle(int idx) // O(N^2) 풀이, 시간초과
+{
+    int cur = idx; // cur, idx 1 2 3 4 5 6 7
+    for(int i=0; i<n; i++)
+    {                   // idx = 0 1 2 3 4 5 6 7
+        cur = arr[cur]; // arr = 0 3 1 3 7 3 4 6
+        if(cur == idx) return true;
+    }
+    return false;
+}
+
+void boj9466()
+{
+    int t;
+    cin >> t;
+    while (t--)
+    {
+        cin >> n;
+        for(int i=1; i<=n; i++)
+            cin >> arr[i];
+        int ans=0;
+        for(int i=1; i<=n; i++)
+            if(!iscycle(i))
+                ans++;
+        
+        cout << ans << '\n';
+    }
+}
+
 int main()
 {
     ios::sync_with_stdio(0);
@@ -716,5 +749,6 @@ int main()
     // boj7562();
     // boj5427();
     // boj2206_san();
-    boj2206();
+    // boj2206();
+    boj9466();
 }
