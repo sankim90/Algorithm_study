@@ -700,37 +700,152 @@ void boj2206() // 로직 설명: https://bloodstrawberry.tistory.com/305
     cout <<-1;
 }
 
-int arr[100005];
+// int arr[100005];
+// int state[100005];
+int arr[10]; // 디버깅용, 이렇게해서 직접 돌려서 코드 복습할것.
+int state[10];
 int n;
+
+
+#define NOT_VISITED 0
+#define VISITED  1
+#ifdef RUN1
+#define CYCLE_IN  2
+#else
+#define CYCLE_IN  -1 // index인 x값과 겹치면 안되므로 -1로 지정
+#endif
+#define NOT_CYCLE_IN  3
+
 // iscycle 함수는 위에서 언급한 것과 같이 N번 이내에 자기 자신으로 돌아오는지 
 // 여부를 이용해 idx번째 학생이 사이클에 들어있는지를 판단하는 함수입니다.
-bool iscycle(int idx) // O(N^2) 풀이, 시간초과
+bool iscycle_N2(int idx) // O(N^2) 풀이, 시간초과
 {
     int cur = idx; // cur, idx 1 2 3 4 5 6 7
     for(int i=0; i<n; i++)
     {                   // idx = 0 1 2 3 4 5 6 7
-        cur = arr[cur]; // arr = 0 3 1 3 7 3 4 6
+        cur = arr[cur]; // arr = 0 3 1 4 7 3 4 6
         if(cur == idx) return true;
     }
     return false;
 }
 
+void run(int x)
+{
+    int cur = x; // x에서 시작할때
+    while (1)
+    {
+        state[cur] = VISITED; // x 는 방문 체크!
+        cur = arr[cur]; // x가 가르키는 다음 노드
+
+        //1. 사이클에 포함된 학생 혹은 사이클에 포함되지 않은 학생을 재방문했을 경우 x는 사이클에 포함되지 않은 학생이다. 
+        //지금까지 방문한 학생들을 사이클에 포함되지 않은 학생으로 분류한다.
+        if(state[cur] == CYCLE_IN || state[cur] == NOT_CYCLE_IN)
+        {
+            cur = x;
+            while (state[cur] == VISITED)
+            {
+                state[cur] = NOT_CYCLE_IN;
+                cur = arr[cur];
+            }
+            return;
+        }
+
+        //2. x가 아닌 다른 방문한 학생 y를 재방문했을 경우 x는 사이클에 포함되지 않고 y는 사이클에 포함되어 있다. 
+        //y에서 출발해 이동하며 다시 y에 도달할 때 까지 만나는 학생들을 사이클에 포함된 학생으로 만들고, x에서 출발해 이동하며 
+        //y에 도달할 때 까지 만나는 학생들을 사이클에 포함되지 않은 학생으로 만든다.
+        if(state[cur] == VISITED && cur != x)
+        {
+            while (state[cur] != CYCLE_IN)
+            {
+                state[cur] = CYCLE_IN;
+                cur = arr[cur];
+            }
+            cur = x;
+            while (state[cur] != CYCLE_IN)
+            {
+                state[cur] = NOT_CYCLE_IN;
+                cur = arr[cur];
+            }
+            return;
+        }
+
+        //3. x를 재방문했을 경우 x는 사이클에 포함된 학생이다. x에서 출발해 이동하며 다시 x에 도달할 때 까지 만나는 학생들을 사이클에 포함된 학생으로 만든다.
+        if(state[cur] == VISITED && cur == x)
+        {
+            while (state[cur] != CYCLE_IN)
+            {
+                state[cur] = CYCLE_IN;
+                cur = arr[cur];
+            }
+            return;
+        }
+    }
+    // 이미 방문한 노드에 또 방문할 경우 탐색이 종료되고 이후 방문 표시를 남기는 작업을 진행하기 때문에 각 노드는 최대 2번 방문되어 O(N)입니다.
+}
+
+
+void run_2(int x){
+  int cur = x; // 현재에서 시작
+  while(true){
+    state[cur] = x; // x값이 진행 됨을 기록
+    cur = arr[cur]; // x가 가르키는 다음 노드
+
+    // 이번 방문에서 지나간 학생에 도달했을 경우
+    if(state[cur] == x){ // x -> 을 반복하다가 다시 제자리 x값에 도착했을경우
+      while(state[cur] != CYCLE_IN){ // 이미 찾은 사이클 이니?
+        state[cur] = CYCLE_IN;       // 아니면 사이클이라고 표시하고
+        cur = arr[cur];              // 전체 표시를 위해 다음 노드로 반복
+      }
+      return;
+    }
+    // 이전 방문에서 지나간 학생에 도달했을 경우
+    else if(state[cur] != 0) 
+        return; // state에 111 333 444 이런식으로 x의 진행이 표현 또는, 이미 사이클이면 더볼게 없음
+  }
+}
+
 void boj9466()
 {
+    //iscycle_N^2 풀이
+    // int t;
+    // cin >> t;
+    // while (t--)
+    // {
+    //     cin >> n;
+    //     for(int i=1; i<=n; i++)
+    //         cin >> arr[i];
+    //     int ans=0;
+    //     for(int i=1; i<=n; i++)
+    //         if(!iscycle_N2(i))
+    //             ans++;
+        
+    //     cout << ans << '\n';
+    // }
+    
     int t;
+    int i;
     cin >> t;
     while (t--)
     {
         cin >> n;
-        for(int i=1; i<=n; i++)
+        fill(state+1, state+n+1, 0);
+        for(i=1; i<=n; i++)
             cin >> arr[i];
-        int ans=0;
-        for(int i=1; i<=n; i++)
-            if(!iscycle(i))
-                ans++;
-        
-        cout << ans << '\n';
+        int ans = 0;
+        for(i=1; i<=n; i++)
+        {
+            if(state[i] == NOT_VISITED)
+                run_2(i);
+        }
+        int cnt = 0;
+        for(i=1; i<=n; i++)
+        {
+            if(state[i] != CYCLE_IN) //
+                cnt++;
+        }
+        cout << cnt << '\n';
     }
+    
 }
 
 int main()
