@@ -770,6 +770,171 @@ void boj9466()
     }
 }
 
+
+bool vis2583[101][101];
+
+void fill_box(int x1, int y1, int x2, int y2)
+{
+    for(int i=y1; i<y2; i++)
+        for(int j=x1; j<x2; j++)
+            vis2583[i][j]   = true;
+}
+
+void boj2583()
+{
+    
+    int test[100];
+    vector <int> V;
+    queue<pair<int, int>> Q;
+
+    int M, N, K;
+    int i, j;
+    int area=0;
+    int numb = 0;
+    
+    cin >> M >> N >> K;
+    
+    for(i=0; i<M; i++)
+        fill(vis2583[i], vis2583[i]+N, 0);
+    
+    while (K--)
+    {
+        int x1, y1, x2, y2; // x.y 좌표계
+        cin >> x1 >> y1 >> x2 >> y2;
+        fill_box(x1, y1, x2, y2);
+    }
+
+    for(i=0; i<M; i++)
+        for(j=0; j<N; j++)
+        {
+            if(!vis2583[i][j])
+            {
+                Q.push({i, j});
+                vis2583[i][j] = true;
+                numb = 0;
+                while (!Q.empty())
+                {
+                    auto cur = Q.front(); Q.pop();
+                    numb++;
+                    for(int dir=0; dir<4; dir++)
+                    {
+                        int nx = cur.first + dx[dir];
+                        int ny = cur.second + dy[dir];
+                        if(nx<0 || nx>=M || ny<0 || ny>=N) continue;
+                        if(vis2583[nx][ny]) continue;
+                        vis2583[nx][ny] = true;
+                        Q.push({nx, ny});
+                    }
+                }
+                V.push_back(numb);
+                area++;
+            }
+        }
+    
+    cout << area <<'\n';
+    sort(V.begin(), V.end());
+    for(auto i : V)
+    {
+        cout << i;
+        if(i != V.back())
+            cout <<' ';
+    }
+}
+
+void boj2667()
+{
+    int N;
+    int i, j;
+    cin >> N;
+    char board[35][35];
+    bool vis[35][35];
+    queue<pair<int, int>> Q;
+    int cnt = 0;
+    int area = 0;
+    vector<int> V;
+
+    for(i=0; i<N; i++)
+    {
+        fill(board[i], board[i]+N, '0');
+        fill(vis[i], vis[i]+N, 0);
+    }
+
+    for(i=0; i<N; i++)
+        for(j=0; j<N; j++)
+            cin >> board[i][j];
+    
+    for(i=0; i<N; i++)
+        for(j=0; j<N; j++)
+        {
+            if(board[i][j] == '1' && vis[i][j] == 0)
+            {
+                Q.push({i, j});
+                vis[i][j] = 1;
+                area = 0;
+                while (!Q.empty())
+                {
+                    auto cur = Q.front(); Q.pop();
+                    area++;
+                    for(int dir=0; dir<4; dir++)
+                    {
+                        int nx = cur.first  + dx[dir];
+                        int ny = cur.second + dy[dir];
+                        if(nx<0 || nx>=N || ny<0 || ny>=N) continue;
+                        if(vis[nx][ny]|| board[nx][ny] == '0') continue;
+                        Q.push({nx, ny});
+                        vis[nx][ny] = 1;
+                    }
+                }
+                V.push_back(area);
+                cnt++;
+            }
+        }
+
+    cout << cnt <<'\n';
+    
+    sort(V.begin(), V.end());
+    for(auto i : V)
+        cout << i <<'\n';
+}
+
+int dist5014[1000001];
+void boj5014()
+{
+    int F, S, G, U, D; // 최대 높이, 시작층, 목표층, 위로 이동거리, 아래로 이동거리
+    int next;
+    queue<int> Q;
+    cin >> F >> S >> G >> U >> D;
+    // 1차원 bfs
+    fill(dist5014, dist5014+1000001, -1);
+    Q.push(S);
+    dist5014[S] = 0;
+
+    while (!Q.empty())
+    {
+        auto cur = Q.front(); Q.pop();
+        
+        for(auto i : {U, D})
+        {
+
+            if(i==U)
+                next = cur + i;
+            else
+                next = cur - i;
+
+            if(next < 1 || next > F) continue;
+            if(dist5014[next]>=0) continue;
+            Q.push(next);
+            dist5014[next] = dist5014[cur] + 1;
+        }
+    }
+
+    if(dist5014[G] == -1)
+        cout << "use the stairs\n";
+    else
+        cout << dist5014[G] << '\n';
+    
+}
+
 int main()
 {
     ios::sync_with_stdio(0);
@@ -787,5 +952,8 @@ int main()
     // boj5427();
     // boj2206_san();
     // boj2206();
-    boj9466();
+    // boj9466();
+    // boj2583();
+    // boj2667();
+    boj5014();
 }
