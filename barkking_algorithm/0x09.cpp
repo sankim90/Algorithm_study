@@ -935,6 +935,199 @@ void boj5014()
     
 }
 
+void boj2468()
+{
+    int board[102][102];
+    bool vis[102][102];
+
+    int N, i, j, k, l;
+    int max_val = 0;
+    int min_val = 0;
+    int area = 0;
+    int ans = 0;
+    queue<pair<int, int>> Q;
+    cin >> N;
+
+    for(i=0; i<N; i++)      //BFS 돌리는데
+        for(j=0; j<N; j++)
+        {
+            cin >> board[i][j];
+            max_val = max(max_val, board[i][j]);
+            min_val = min(min_val, board[i][j]);
+        }
+    
+    for(i=min_val; i<max_val; i++)
+    {
+        area = 0;
+        for(l=0; l<N; l++)
+            fill(vis[l], vis[l]+N, 0);
+        
+        for(j=0; j<N; j++)
+        {
+            for(k=0; k<N; k++)
+            {
+                if((i < board[j][k]) && vis[j][k] == 0)
+                {
+                    Q.push({j, k});
+                    vis[j][k] = 1;
+
+                    while (!Q.empty())
+                    {
+                        auto cur = Q.front(); Q.pop();
+                        for(int dir=0; dir<4; dir++)
+                        {
+                            int nx = cur.first  + dx[dir];
+                            int ny = cur.second + dy[dir];
+                            if(nx<0 || nx>=N || ny<0 || ny>=N) continue;
+                            if(vis[nx][ny] || board[nx][ny] <= i) continue;
+                            Q.push({nx, ny});
+                            vis[nx][ny] = 1;
+                        }
+                    }
+                    area++;
+                }
+            }
+        }
+        ans = max(ans, area);
+    }
+
+    cout << ans <<'\n';
+}
+
+void boj6593()
+{
+    char board[32][32][32]; // L R C
+    int dist[32][32][32];
+    int dx[6] = {1, 0, -1, 0, 0, 0}; // 행
+    int dy[6] = {0, 1, 0, -1, 0, 0}; // 열
+    int dz[6] = {0, 0, 0, 0, 1, -1}; // 높이
+    int L, R, C;
+    int i, j, k;
+    int end_flag;
+    queue<tuple<int, int, int>> Q;
+
+
+    while (1)
+    {
+        cin >> L >> R >> C;
+        if(L == 0 && R == 0 && C == 0) return;
+        end_flag = 0;
+        for(i=0; i<L; i++)
+            for(j=0; j<R; j++)
+                for(k=0; k<C; k++)
+                {
+                    cin >> board[i][j][k];
+                    dist[i][j][k] = -1;
+                    if(board[i][j][k] == 'S')
+                    {
+                        Q.push({i, j, k});
+                        dist[i][j][k] = 0;
+                    }
+                }
+
+        while (!Q.empty())
+        {
+            int curx, cury, curz;
+            tie(curz, curx, cury) = Q.front(); Q.pop();
+
+            for(int dir=0; dir<6; dir++)
+            {
+                int nx = curx + dx[dir];
+                int ny = cury + dy[dir];
+                int nz = curz + dz[dir];
+                if(nx<0 || nx>=R || ny<0 || ny>=C || nz<0 || nz>=L) continue;
+                if(board[nz][nx][ny] == '#' || dist[nz][nx][ny] >= 0) continue;
+                if(board[nz][nx][ny] == 'E')
+                {
+                    cout << "Escaped in "<< dist[curz][curx][cury] + 1 << " minute(s).\n";
+                    end_flag = 1;
+                }
+                Q.push({nz,nx,ny});
+                dist[nz][nx][ny] = dist[curz][curx][cury] + 1;
+            }
+        }
+
+        if(!end_flag)
+            cout << "Trapped!\n";
+    }
+
+}
+
+void boj2573()
+{
+    int M, N;
+    int i, j;
+    cin >> N >> M;
+
+    int board[304][304];
+    bool vis[304][304];
+    int area = 0;
+    int year = 0;
+    queue<pair<int, int>> Q;
+
+    for(i=0; i<N; i++)
+        for(j=0; j<M; j++)
+            cin >> board[i][j];
+
+    while (1)
+    {
+        area = 0;
+        year++;
+        for(i=0; i<N; i++)
+            fill(vis[i], vis[i]+M, 0);
+
+        for(i=0; i<N; i++)
+        {
+            for(j=0; j<M; j++)
+            {
+                if(board[i][j] != 0 && vis[i][j] == 0)
+                {
+                    Q.push({i, j});
+                    vis[i][j] = 1;
+
+                    while (!Q.empty())
+                    {
+                        auto cur = Q.front();   Q.pop();
+                        for(int dir = 0; dir < 4; dir++)
+                        {
+                            int nx = cur.first  + dx[dir];
+                            int ny = cur.second + dy[dir];
+                            if(nx<0 || nx>=N || ny<0 || ny>=M) continue;
+                            if(vis[nx][ny]) continue;
+                            if(board[nx][ny] == 0){
+                                if(board[cur.first][cur.second]>0) // 요 케이스만 조심하자, 0 이하로 가면 안됨
+                                    board[cur.first][cur.second]--;
+                                continue;
+                            }
+                            Q.push({nx, ny});
+                            vis[nx][ny] = 1;
+                        }
+                    }
+                    area++;
+                }
+            }
+        }
+        // cout << '\n';
+        // for(i=0; i<N; i++) // 디버깅때 이렇게 한번씩 그려보는거 유용한듯
+        // {
+        //     for(j=0; j<M; j++)
+        //         cout << board[i][j] << ' ';
+        //
+        //     cout << '\n';
+        // }
+        if(area>1)
+        {
+            cout << year-1;
+            return;
+        }
+        else if(area == 0)
+        {
+            cout << 0;
+            return;
+        }
+    }
+}
+
 int main()
 {
     ios::sync_with_stdio(0);
@@ -955,5 +1148,9 @@ int main()
     // boj9466();
     // boj2583();
     // boj2667();
-    boj5014();
+    // boj5014();
+    // boj2468();
+    // boj6593();
+    boj2573();
+
 }
