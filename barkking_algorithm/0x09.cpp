@@ -1093,7 +1093,7 @@ void boj2573()
                             int nx = cur.first  + dx[dir];
                             int ny = cur.second + dy[dir];
                             if(nx<0 || nx>=N || ny<0 || ny>=M) continue;
-                            if(vis[nx][ny]) continue;
+                            if(vis[nx][ny]) continue; // 서순 유의, visit 먼저 체크해야 된다!
                             if(board[nx][ny] == 0){
                                 if(board[cur.first][cur.second]>0) // 요 케이스만 조심하자, 0 이하로 가면 안됨
                                     board[cur.first][cur.second]--;
@@ -1128,6 +1128,97 @@ void boj2573()
     }
 }
 
+int board_2146[101][101];
+int bridge(int i, int j, int N) {
+
+    queue<pair<int, int>> Q;
+    int dist[101][101];
+	for (int k = 0; k < N; k++)
+		fill(dist[k], dist[k] + N, -1); // 매번 -1 초기화를 하지 않으면 이전 시도 때의 dist 값 0 초기화 때문에 continue에 다걸림
+
+    Q.push({i,j});
+    dist[i][j] = 0;
+
+    while (!Q.empty())
+    {
+        auto cur = Q.front(); Q.pop();
+        for(int dir=0; dir<4; dir++)
+        {
+            int nx = cur.first + dx[dir];
+            int ny = cur.second + dy[dir];
+            if(nx<0 || nx>=N || ny<0 || ny>=N) continue;
+            if(dist[nx][ny]>=0) continue;
+            if(board_2146[i][j] == board_2146[nx][ny]) continue; // cur 값이 아니라 i,j이다, 입력받은 "id"값과 비교해야 한다!
+            if(board_2146[nx][ny] != 0) // 다음섬을 찾은거임~
+                return dist[cur.first][cur.second]; // 다리의 거리니까 +1 할필요 없음
+            Q.push({nx, ny});
+            dist[nx][ny] = dist[cur.first][cur.second] + 1;
+        }
+    }
+
+    return 1000;
+}
+
+void boj2146() 
+{
+    int N;
+    queue<pair<int, int>> Q;
+    
+    bool vis[101][101];
+    int i, j;
+    int min_dist=1000;
+    int id = 1;
+    cin >> N;
+
+    for(i=0; i<N; i++)
+        for(j=0; j<N; j++)
+        {
+            cin >> board_2146[i][j];
+            vis[i][j] = 0;
+        }
+    
+    for(i=0; i<N; i++)
+    {
+        for(j=0; j<N; j++)
+        {
+            if(board_2146[i][j] && vis[i][j] == 0) // BFS 돌면서 각 섬마다 id 할당
+            {
+                Q.push({i, j});
+                vis[i][j] = 1;
+
+                while (!Q.empty())
+                {
+                    auto cur = Q.front(); Q.pop();
+                    board_2146[cur.first][cur.second] = id;
+                    for(int dir=0; dir<4; dir++)
+                    {
+                        int nx = cur.first + dx[dir];
+                        int ny = cur.second + dy[dir];
+                        if(nx<0 || nx>=N || ny<0 || ny>=N) continue;
+                        if(board_2146[nx][ny] == 0 || vis[nx][ny]) continue;
+                        Q.push({nx, ny});
+                        vis[nx][ny] = 1;
+                    }
+                }
+                id++;
+            }
+        }
+    }
+
+    for(i=0; i<N; i++)
+    {
+        for(j=0; j<N; j++)
+        {
+            if(board_2146[i][j] == 0) continue;
+            min_dist = min(min_dist, bridge(i,j,N));
+        }
+    }
+
+    cout << min_dist;
+
+}
+
+
 int main()
 {
     ios::sync_with_stdio(0);
@@ -1151,6 +1242,7 @@ int main()
     // boj5014();
     // boj2468();
     // boj6593();
-    boj2573();
+    // boj2573();
+    boj2146();
 
 }
