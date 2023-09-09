@@ -1218,6 +1218,40 @@ void boj2146()
 
 }
 
+#define MX 100001
+int dist13549 [MX];
+void boj13549()
+{
+    int N, K;
+    deque<int> DQ;
+    int dx1[3] = {2, 1, -1};
+    cin >> N >> K;
+    fill(dist13549, dist13549+MX, -1);
+
+    DQ.push_back(N);
+    dist13549[N] = 0;
+
+    while (!DQ.empty())
+    {
+        auto cur = DQ.front(); DQ.pop_front();
+        if(cur == K)
+        {
+            cout << dist13549[cur];
+            return;
+        }
+        if(2*cur < MX && dist13549[2*cur] == -1)
+        {
+            DQ.push_front(2*cur);
+            dist13549[2*cur] = dist13549[cur];
+        }
+        for(int nxt : {cur-1,cur+1})
+        {
+            if(nxt < 0 || nxt >= MX || dist13549[nxt] >= 0) continue;
+            dist13549[nxt] = dist13549[cur]+1;
+            DQ.push_back(nxt);      
+        }
+    }
+}
 
 int main()
 {
@@ -1243,6 +1277,6 @@ int main()
     // boj2468();
     // boj6593();
     // boj2573();
-    boj2146();
-
+    // boj2146();
+    boj13549();
 }
