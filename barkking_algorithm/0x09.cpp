@@ -1218,17 +1218,16 @@ void boj2146()
 
 }
 
-#define MX 100001
+#define MX 200001
 int dist13549 [MX];
-void boj13549()
+void boj13549() // 0-1 BFS 개념! https://chan9.tistory.com/120
 {
     int N, K;
     deque<int> DQ;
-    int dx1[3] = {2, 1, -1};
     cin >> N >> K;
     fill(dist13549, dist13549+MX, -1);
 
-    DQ.push_back(N);
+    DQ.push_back(N); // Q라면 FIFO니 뒤로 밖에 못넣으니 Deque으로 선언
     dist13549[N] = 0;
 
     while (!DQ.empty())
@@ -1239,12 +1238,12 @@ void boj13549()
             cout << dist13549[cur];
             return;
         }
-        if(2*cur < MX && dist13549[2*cur] == -1)
-        {
-            DQ.push_front(2*cur);
-            dist13549[2*cur] = dist13549[cur];
+        if(2*cur < MX && dist13549[2*cur] == -1) // 가중치가 0인 순간이동 연산이 if의 최우선 순위여야 함
+        {                                        // 아니면, +-1연산이 먼저 노드에 visit 해서 2*cur 연산이 수행되지 못할 수 있다! -> 최단거리 불가
+            DQ.push_front(2*cur); //순간이동 연산은 최우선으로 수행되야 하므로 front에 넣음
+            dist13549[2*cur] = dist13549[cur]; // +1이 아님을 기억하자
         }
-        for(int nxt : {cur-1,cur+1})
+        for(int nxt : {cur-1,cur+1}) // 서순 중요함 -1, +1 반드시 지켜야함, 아래는 기존 BFS와 같음
         {
             if(nxt < 0 || nxt >= MX || dist13549[nxt] >= 0) continue;
             dist13549[nxt] = dist13549[cur]+1;
@@ -1252,6 +1251,55 @@ void boj13549()
         }
     }
 }
+
+// #define MAXSIZE 100001 // 내풀이
+// int dist13549 [MAXSIZE];
+// void boj13549()
+// {
+//     int N, K;
+//     deque<int> DQ;
+//     int dx1[3] = {2, -1, 1}; // 2, -1, 1 서순 아주 중요함
+//     cin >> N >> K;
+//     fill(dist13549, dist13549+MAXSIZE, -1);
+
+//     DQ.push_back(N);
+//     dist13549[N] = 0;
+
+//     while (!DQ.empty())
+//     {
+//         auto cur = DQ.front(); DQ.pop_front();
+//         if(cur == K)
+//         {
+//             cout << dist13549[cur];
+//             return;
+//         }
+//         for(int dir=0; dir<3; dir++)
+//         {
+//             int nx;
+//             if(dir == 0)
+//             {
+//                 nx = cur * dx1[dir];
+//                 if(nx>=MAXSIZE || dist13549[nx]>=0) continue;
+//                 DQ.push_front(nx);
+//                 dist13549[nx] = dist13549[cur];
+//             }
+//             if(dir == 1)
+//             {
+//                 nx = cur + dx1[dir];
+//                 if(nx < 0 || nx>=MAXSIZE || dist13549[nx]>=0) continue;
+//                 DQ.push_back(nx);
+//                 dist13549[nx] = dist13549[cur]+1;
+//             }
+//             else if(dir == 2)
+//             {
+//                 nx = cur + dx1[dir];
+//                 if(nx < 0 || nx>=MAXSIZE || dist13549[nx]>=0) continue;
+//                 DQ.push_back(nx);
+//                 dist13549[nx] = dist13549[cur]+1;
+//             }
+//         }
+//     }
+// }
 
 int main()
 {
