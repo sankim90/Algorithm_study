@@ -1300,6 +1300,149 @@ void boj13549() // 0-1 BFS 개념! https://chan9.tistory.com/120
 //         }
 //     }
 // }
+int dist1600[31][202][202];
+void boj1600()
+{
+    int K, R, C;
+    int i, j, l;
+    int nx, ny, nk;
+    int dir=0;
+    bool board[202][202];
+    
+    int dx1600[8] = {1, 2,  2,  1, -1, -2, -2, -1}; // 행
+    int dy1600[8] = {2, 1, -1, -2, -2, -1,  1,  2}; // 열
+
+    queue<tuple<int, int, int>> Q;
+    cin >> K >> C >> R;
+
+    for(i=0; i<R; i++)
+    {
+        for(j=0; j<C; j++)
+        {
+            cin >> board[i][j];
+                for(l=0; l<=K; l++)
+                    dist1600[l][i][j] = -1;
+        }
+    }
+    
+    dist1600[0][0][0] = 0;  //처음에는 K를 -- 하는 식으로 생각했는데 이러면 구현이 까다로워 진다.
+    Q.push({0, 0, 0});      
+
+    while (!Q.empty())
+    {
+        // K 값이 있으면 나이트 이동
+        // 없으면 일반 이동 
+        // K값이 있다고 나이트 이동만 하란법은 없다.
+        int cur_x, cur_y, cur_z;    //cur_z를 능력이용 수 라고 놓고 풀이
+        tie(cur_z, cur_x, cur_y) = Q.front(); Q.pop();
+
+        if(cur_z<K)         // 능력이 남아있을때
+        {
+            for(int dir=0; dir<8; dir++)
+            {
+                int nx = cur_x + dx1600[dir];
+                int ny = cur_y + dy1600[dir];
+                if(nx<0 || nx>=R || ny<0 || ny>=C) continue;
+                if(board[nx][ny] || dist1600[cur_z+1][nx][ny]>=0) continue; // cur_z + 1 능력이동 이미 했는지 확인해야함
+                Q.push({cur_z+1, nx, ny});                                  // 능력이동을 수행한 세계로 이동
+                dist1600[cur_z+1][nx][ny] = dist1600[cur_z][cur_x][cur_y] + 1; // 벽부수기랑 비슷한 로직
+            }
+        }
+        for(int dir=0; dir<4; dir++)    // else로하면 안된다, K값이 있다고 나이트 이동만 하란법은 없다.
+        {
+            int nx = cur_x + dx[dir];
+            int ny = cur_y + dy[dir];
+            if(nx<0 || nx>=R || ny<0 || ny>=C) continue;
+            if(board[nx][ny] || dist1600[cur_z][nx][ny]>=0) continue;
+            Q.push({cur_z, nx, ny});
+            dist1600[cur_z][nx][ny] = dist1600[cur_z][cur_x][cur_y] + 1;
+        }
+    }
+
+    int ans = 200000;
+    for(int i=0; i<=K; i++)             // 전체 다 뒤져봐야 한다!
+    {
+        if(dist1600[i][R-1][C-1] != -1)
+            ans = min(ans, dist1600[i][R-1][C-1]);
+    }
+
+    if(ans == 200000) cout << -1;
+    else cout << ans;
+
+}
+
+void boj13913()
+{
+    int N, K;
+    const int MAX = 200001; //200001;
+    int dx[3] = {-1, 1, 2};
+    vector<int> V;
+    int dist[MAX];
+    int record[MAX];
+    queue<int> Q;
+    cin >> N >> K;
+    fill(dist, dist+MAX, -1);
+
+    Q.push(N);
+    dist[N] = 0;
+
+    while (!Q.empty())
+    {
+        auto cur = Q.front(); Q.pop();
+        for(int x:dx)
+        {
+            int nx;
+            if(x==2)
+                nx = cur * x;
+            else
+                nx = cur + x;
+            
+            if(nx<0 || nx>=MAX) continue;
+            if(dist[nx]>=0) continue;
+            Q.push(nx);
+            record[nx] = cur;
+            dist[nx] = dist[cur] + 1;
+        }
+    }
+
+    cout << dist[K] << "\n";
+
+    // 정답 코드 풀이 record 기록 후 역추적 함 ref: https://chan9.tistory.com/91
+    record[N] = N;                  // 이 방식은 문제를 경험해 봤어야 이렇게 풀 수 있을듯
+    deque<int> dq = {K};
+    while (dq.front() != N)
+        dq.push_front(record[dq.front()]);
+
+    for(auto i : dq)
+        cout << i << " ";
+
+    cout << "\n";
+
+    // 내 풀이, 역추적 BFS를 돌림
+    Q.push({K});
+    while (!Q.empty()) 
+    {
+        auto cur = Q.front(); Q.pop();
+        V.push_back(cur);
+        for(int x:dx)
+        {
+            int nx;
+            if(x==2)
+                nx = cur / x;
+            else
+                nx = cur + x;
+            if(nx<0 || nx >= MAX) continue;
+            if(dist[nx] == (dist[cur] - 1))
+            {
+                Q.push(nx);
+                break;
+            }
+        }  
+    }
+    
+    for(auto x=V.rbegin(); x<V.rend(); x++)
+        cout << *x << " ";     
+}
 
 int main()
 {
@@ -1326,5 +1469,7 @@ int main()
     // boj6593();
     // boj2573();
     // boj2146();
-    boj13549();
+    // boj13549();
+    // boj1600();
+    boj13913();
 }
