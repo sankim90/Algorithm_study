@@ -1558,7 +1558,7 @@ void boj11967()
             board[x.first][x.second] = 1;       // 원하는 출력은 베시가 스위치를 켠 최대 횟수이다!!, 불켜진 방으로 이동 못하더라도 스위치 켯으면 카운트임
         }
 
-        for(int dir=0; dir<4; dir++)
+        for(int dir=0; dir<4; dir++)            // 베시는 계속 움직여서 스위치를 찾아야한다, 현재 위치에 언제나 스위치가 있진 않다.
         {
             int nx = cur.first + dx[dir];
             int ny = cur.second + dy[dir];
