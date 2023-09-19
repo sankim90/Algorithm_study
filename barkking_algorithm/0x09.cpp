@@ -1444,6 +1444,142 @@ void boj13913()
         cout << *x << " ";     
 }
 
+int dist14442[11][1001][1001];
+void boj14442()
+{
+    int R, C, K;
+    int i, j, k;
+    char board[1001][1001];
+    cin >> R >> C >> K;
+    
+    queue<tuple<int, int, int>> Q;
+
+    for(i=0; i<R; i++)
+    {
+        for(j=0; j<C; j++)
+        {
+            cin >> board[i][j];
+            for(k=0; k<=K; k++)
+                dist14442[k][i][j] = -1;
+        }
+    }
+
+    dist14442[0][0][0] = 1;
+    Q.push({0, 0, 0});
+
+    while (!Q.empty())
+    {
+        int cur_x, cur_y, cur_z;
+        tie(cur_z, cur_x, cur_y) = Q.front();
+
+        Q.pop();
+        if(cur_z<K)
+        {
+            for(int dir=0; dir<4; dir++)
+            {
+                int nx = cur_x + dx[dir];
+                int ny = cur_y + dy[dir];
+                if(nx<0 || nx>=R || ny<0 || ny>=C) continue;
+                if(dist14442[cur_z+1][nx][ny]>=0) continue;
+                dist14442[cur_z+1][nx][ny] = dist14442[cur_z][cur_x][cur_y] + 1;
+                Q.push({cur_z+1, nx, ny});
+            }
+        }
+        for(int dir=0; dir<4; dir++)
+        {
+            int nx = cur_x + dx[dir];
+            int ny = cur_y + dy[dir];
+            if(nx<0 || nx>=R || ny<0 || ny>=C) continue;
+            if(board[nx][ny] == '1' || dist14442[cur_z][nx][ny]>=0) continue;
+            dist14442[cur_z][nx][ny] = dist14442[cur_z][cur_x][cur_y] + 1;
+            Q.push({cur_z, nx, ny});
+        }
+    }
+
+    int ans = 2000000;
+    for(i=0; i<=K; i++)
+    {
+        if(dist14442[i][R-1][C-1] != -1)
+            ans = min(ans, dist14442[i][R-1][C-1]);
+    }
+
+    if(ans == 2000000)
+        cout << -1;
+    else
+        cout << ans;
+    
+}
+
+vector<pair<int, int>> swboard[103][103]; // vector 이런식으로 데이터 받는거 잘 알아놓자!
+void boj11967()
+{
+    int N, M;
+    int i, j;
+    queue<pair<int, int>> Q;
+    cin >> N >> M;
+    int board[103][103]; // 0 꺼짐 1 준비 2 불켜짐
+    bool vis[103][103];
+    bool connect = false;
+
+    for(i=0; i<N; i++)
+    {
+        fill(board[i], board[i]+N, 0);
+        fill(vis[i], vis[i]+N, 0);
+    }
+    
+    for(i=0; i<M; i++)
+    {
+        int x, y, a, b;
+        cin >> x >> y >> a >> b;
+        swboard[x-1][y-1].push_back({a-1, b-1}); // vector 이런식으로 데이터 받는거 잘 알아놓자!22
+    }
+    
+    board[0][0] = 1;
+    vis[0][0] = 1;
+    Q.push({0, 0});
+    
+    while (!Q.empty())
+    {
+        auto cur = Q.front(); Q.pop();
+
+        for(auto x : swboard[cur.first][cur.second]) { // 현재 위치에서 스위치 모두 켠다!
+            connect = false;
+            if(vis[x.first][x.second]) continue;
+            for(int dir=0; dir<4; dir++) {
+                int nx = x.first + dx[dir];
+                int ny = x.second + dy[dir];
+                if(nx<0 || nx>=N || ny<0 || ny>=N) continue;
+                if(vis[nx][ny]) connect = true; // 이 부분이 띵했다, 스위치 켜진 방의 맞닿은 곳을 방문했다면 -> 이동가능한 곳이다!
+            }
+            if(connect) {                       // 새로 발견한 방을 방문 처리하고, Q에 넣어 스위치 켜는 작업해야한다!
+                vis[x.first][x.second] = 1;
+                Q.push({x.first, x.second});
+            }
+            board[x.first][x.second] = 1;       // 원하는 출력은 베시가 스위치를 켠 최대 횟수이다!!, 불켜진 방으로 이동 못하더라도 스위치 켯으면 카운트임
+        }
+
+        for(int dir=0; dir<4; dir++)
+        {
+            int nx = cur.first + dx[dir];
+            int ny = cur.second + dy[dir];
+            if(nx<0 || nx>=N || ny<0 || ny>=N) continue;
+            if(vis[nx][ny] || board[nx][ny] == 0) continue;
+            Q.push({nx, ny});
+            vis[nx][ny] = 1;
+        }
+    }
+
+
+    int ans = 0;
+    for(i=0; i<N; i++)
+        for(j=0; j<N; j++)
+            if(board[i][j] == 1)
+                ans++;
+    
+    cout << ans;
+    
+}
+
 int main()
 {
     ios::sync_with_stdio(0);
@@ -1471,5 +1607,7 @@ int main()
     // boj2146();
     // boj13549();
     // boj1600();
-    boj13913();
+    // boj13913();
+    // boj14442();
+    boj11967();
 }
