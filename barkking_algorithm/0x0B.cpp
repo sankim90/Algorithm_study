@@ -74,61 +74,37 @@ void boj17478(int n) {
     str17478.erase(0, 4);
 }
 
-int board1780[2188][2188];
+int board1780[2200][2200];
 int Cnt1780[3]; // -1 0 1
 int N;
-void isSame(int r, int c) {
-    int tmp_zero = 0;
-    int tmp_mone = 0;
-    int tmp_pone = 0;
-    for(int i=0; i<3; i++)
-        for(int j=0; j<3; j++) {
-            if(board1780[r+i][c+j] == 0)
-                tmp_zero++;
-            else if(board1780[r+i][c+j] == 1)
-                tmp_pone++;
-            else
-                tmp_mone++;
+bool isSame(int n, int r, int c) { // 3^n을 다이나믹하게 처리할 수 있는 함수를 만들어야함, N 81 에서 분할되는 TC를 상상해보자.
+
+    for(int i=r; i<r+n; i++)
+        for(int j=c; j<c+n; j++) {
+            if(board1780[r][c] != board1780[i][j])
+                return false;
         }
 
-    if(tmp_mone == 9)
-        Cnt1780[0]++;
-    else if(tmp_zero == 9)
-        Cnt1780[1]++;
-    else if(tmp_pone == 9)
-        Cnt1780[2]++;
-    else {
-        Cnt1780[0] += tmp_mone;
-        Cnt1780[1] += tmp_zero;
-        Cnt1780[2] += tmp_pone;
-    }
+    return true;
 }
 
 void boj1780(int n, int r, int c) {
-    if(N == n) {
-        if(Cnt1780[0] && Cnt1780[1] == 0 && Cnt1780[2] == 0)
-            Cnt1780[0] = 1;
-        else if(Cnt1780[0] == 0 && Cnt1780[1] && Cnt1780[2] == 0)
-            Cnt1780[1] = 1;
-        else if(Cnt1780[0] == 0 && Cnt1780[1] == 0 && Cnt1780[2])
-            Cnt1780[2] = 1;
-        cout << Cnt1780[0] << '\n' << Cnt1780[1] << '\n' << Cnt1780[2] << '\n';
-        return;
+    
+    if(isSame(n, r, c)) {
+        if(board1780[r][c] == -1)
+            Cnt1780[0]++;
+        else if(board1780[r][c] == 0)
+            Cnt1780[1]++;
+        else
+            Cnt1780[2]++;
+        return;             // base condition
     }
-    
-    isSame(r, c);
-    
-    if(c == (N-3)) {
-        c = 0;
-        r += 3;
-    }
-    else
-        c += 3;
-    
-    if(N == 3)
-        boj1780(N, r, c);
-    else        
-        boj1780(n+1, r, c);
+    else {
+        int div = n/3;      // else의 경우 분할해야 하므로
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++)             
+                boj1780(div, r + i*div, c + j*div); // 핵심이 되는 부분인듯, r + i*div 이런 수식을 만들어 낼 수 있어야 함
+    }                                               // 81, 9, 3 TC를 두고 코드를 보자 분할정복의 의미를 알 수 있다.
 }
 
 void recur_input() {
@@ -143,7 +119,8 @@ void recur_input() {
         for(j=0; j<N; j++)
             cin >> board1780[i][j];
 
-    boj1780(0, 0, 0);
+    boj1780(N, 0, 0);
+    for (int i = 0; i < 3; i++) cout << Cnt1780[i] << "\n";
 }
 
 int main()
