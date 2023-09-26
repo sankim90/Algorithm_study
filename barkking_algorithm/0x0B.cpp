@@ -76,7 +76,7 @@ void boj17478(int n) {
 
 int board1780[2200][2200];
 int Cnt1780[3]; // -1 0 1
-int N;
+
 bool isSame(int n, int r, int c) { // 3^n을 다이나믹하게 처리할 수 있는 함수를 만들어야함, N 81 에서 분할되는 TC를 상상해보자.
 
     for(int i=r; i<r+n; i++)
@@ -107,20 +107,88 @@ void boj1780(int n, int r, int c) {
     }                                               // 81, 9, 3 TC를 두고 코드를 보자 분할정복의 의미를 알 수 있다.
 }
 
+bool board2630[200][200];
+int cnt2630[2];
+bool isSameColor(int n, int r, int c) { // 2^n 면적 내의 값이 일치하는지 확인하는 함수
+
+    for(int i=r; i<r+n; i++)
+        for(int j=c; j<c+n; j++)
+            if(board2630[r][c] != board2630[i][j]) return false;
+    
+    return true;
+}
+
+void boj2630(int n, int r, int c) {
+    if(isSameColor(n, r, c)) {
+        if(board2630[r][c])
+            cnt2630[1]++;
+        else
+            cnt2630[0]++; 
+        return;
+    }
+
+    int div = n/2; // 2^n 이 일치하지 않으면 자르고 다시 돌린다!
+
+    for(int i=0; i<2; i++)
+        for(int j=0; j<2; j++)
+            boj2630(div, r + i*div, c + j*div);
+
+}
+
+char board1992[100][100];
+string ans1992;
+bool isQuad(int n, int r, int c) {
+    for(int i=r; i<r+n; i++)
+        for(int j=c; j<c+n; j++) 
+            if(board1992[r][c] != board1992[i][j]) return false;
+    return true;
+}
+
+void boj1992(int n, int r, int c) {
+    if(isQuad(n, r, c)) {
+        ans1992.push_back(board1992[r][c]);
+        return;
+    }
+    else {
+        ans1992.push_back('(');
+        int div = n/2;
+        for(int i=0; i<2; i++)
+        {
+            for(int j=0; j<2; j++) {
+                boj1992(div, r + i*div, c + j*div);
+            }
+        }
+        ans1992.push_back(')');
+    }
+}
+
 void recur_input() {
     
     int i, j;
+    int N;
     cin >> N;
     // cout << "어느 한 컴퓨터공학과 학생이 유명한 교수님을 찾아가 물었다.\n";
     // boj17478(N);
     // cout << "라고 답변하였지.\n";
 
+    // for(i=0; i<N; i++)
+    //     for(j=0; j<N; j++)
+    //         cin >> board1780[i][j];
+
+    // boj1780(N, 0, 0);
+    // for (int i = 0; i < 3; i++) cout << Cnt1780[i] << "\n";
+
     for(i=0; i<N; i++)
         for(j=0; j<N; j++)
-            cin >> board1780[i][j];
+            cin >> board1992[i][j];
+    
+    boj1992(N, 0, 0);
 
-    boj1780(N, 0, 0);
-    for (int i = 0; i < 3; i++) cout << Cnt1780[i] << "\n";
+    for(auto i:ans1992)
+        cout << i;
+
+    // boj2630(N, 0, 0);
+    // for (int i = 0; i < 2; i++) cout << cnt2630[i] << "\n";
 }
 
 int main()
