@@ -162,6 +162,28 @@ void boj1992(int n, int r, int c) {
     }
 }
 
+void Boxdraw(int n, int i, int j) { // ref: https://winkite1226.tistory.com/119
+    if(((i/n) % 3 == 1) && ((j/n) % 3 == 1))
+        cout << ' ';
+    else {
+        if(n == 1)
+            cout << '*';
+        else
+            Boxdraw(n/3, i, j);
+    }
+
+    return;
+}
+
+void boj2447(int n) {
+    for(int i=0; i<n; i++) {
+        for(int j=0; j<n; j++) {
+            Boxdraw(n, i, j);
+        }
+        cout << '\n';
+    }
+}
+
 void recur_input() {
     
     int i, j;
@@ -178,17 +200,18 @@ void recur_input() {
     // boj1780(N, 0, 0);
     // for (int i = 0; i < 3; i++) cout << Cnt1780[i] << "\n";
 
-    for(i=0; i<N; i++)
-        for(j=0; j<N; j++)
-            cin >> board1992[i][j];
+    // for(i=0; i<N; i++)
+    //     for(j=0; j<N; j++)
+    //         cin >> board1992[i][j];
     
-    boj1992(N, 0, 0);
+    // boj1992(N, 0, 0);
 
-    for(auto i:ans1992)
-        cout << i;
+    // for(auto i:ans1992)
+    //     cout << i;
 
     // boj2630(N, 0, 0);
     // for (int i = 0; i < 2; i++) cout << cnt2630[i] << "\n";
+    boj2447(N);
 }
 
 int main()
