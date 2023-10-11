@@ -47,14 +47,14 @@ void boj9663(int cur_row) { // 매 행마다 체크하는데
 }
 
 vector <int> V;
-void boj1182(int cur, int total) {
-    if(cur == N) {
+void boj1182(int cur, int total) { // 상태 트리로 그림을 그려보면 좋다, 부분 수열은 2^N 개이다.
+    if(cur == N) {              //트리의 맨 마지막값이 총합이다. 
         if(total == M) cnt++;
         return;
     }
 
-    boj1182(cur+1, total); // 현재값을 더하지 않음
-    boj1182(cur+1, total+V[cur]); // 현재값을 더함
+    boj1182(cur+1, total); // 현재값을 더하지 않음 EX) N 3일때, 0-> 3-> 0 == {3} 의 total 값 3 비교! 
+    boj1182(cur+1, total+V[cur]); // 현재값을 더함 EX2) N 3일때, 0-> 3 -> 5 == {3, 5} 의 total 값 8 비교! 
 }
 
 int main()
