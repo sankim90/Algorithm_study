@@ -9,6 +9,14 @@ bool isused2[35];
 int arr[10];
 vector <int> V;
 
+//두 수열에서 같은 위치에 다른 값이 있는 경우가 하나라도 있으면 다른 수열이라고 말합니다.
+// An = a1 + 2(n-1)
+// -> 1 3 5 7 9
+// Bn = a1 - 2(n-1)
+// -> 9 7 5 3 1
+// A5와 B5의 값이 다르므로, 두 개는 다른 수열이다. 즉 순서를 인정한다.
+// "수열"은 순서가 있는 나열이다.
+
 // next_permutation은 오름차순을 내림차순으로 정렬 하는 과정에서 모든 순열을 알 수 있는 함수다.
 bool next_permutation_san(int a[], int size) { //next_permutation의 정의, 과정을 잘 알아두자 ref: https://charles098.tistory.com/8
     int k = size - 1;
@@ -108,75 +116,68 @@ void next_permutation_train() {
     //     V.push_back(tmp);
     // }
     
-    // do{
-    //     for(int i=0; i<N; i++)
-    //         cout << V[i] << " ";
-    //     cout <<"\n";
-    // } while(next_permutation(V.begin(), V.end()));
-
-    // combination
-    // vector <int> npn;
-    // for(int i=1; i<=N; i++)
-    //     V.push_back(i);
-    
-    // for(int i=0; i<M; i++)
-    //     npn.push_back(0);
-
-    // for(int i=0; i<N-M; i++)
-    //     npn.push_back(1);
-    
-    // sort(npn.begin(), npn.end()); // 반드시 수행해야 한다, next_permutation은 오름차순으로 정렬되어야 함
-
-    // do
-    // {
-    //     for(int i=0; i<V.size(); i++) {
-    //         if(npn[i]) // npn이 내림차순으로 정렬되가면서 조합을 뽑을 수 있게됨
+    //순열
+    // do {
+    //     for(int i=0; i<M; i++) {
     //             cout << V[i] << " ";
-    //     }
+    //         }
+    //     cout << "\n";
+    //     reverse(V.begin()+M, V.end());
+    // } while (next_permutation(V.begin(), V.end()));
+
+    //조합
+    // vector <int> npn;
+    // for(int i=0; i<N; i++) {
+    //     if(i<M)
+    //         npn.push_back(0);
+    //     else
+    //         npn.push_back(1);
+    // }
+    
+    // do {
+    //     for(int i=0; i<N; i++) {
+    //             if(npn[i] == 0)
+    //                 cout << V[i] << " ";
+    //         }
     //     cout << "\n";
     // } while (next_permutation(npn.begin(), npn.end()));
 }
 
-void boj15650(int k) {  // K개 선택함
-    //#1 백트래킹을 이용한 풀이                        
-    // if(k == M) { // M개 충족시
-    //     bool jump = false;
-    //     for(int i=0; i<M; i++) {
-    //         if(is_sorted(arr, arr+M)) {
-    //             cout << arr[i] << " "; // arr에 기록한 M개값 출력
-    //             jump = true;
-    //         }
-    //     }
-    //     if(jump)
-    //         cout << "\n";
+void boj15650(int k, int start) {  // 조합 구현 문제
+    //#1 백트래킹 풀이
+
+    // if(k==M) {
+    //     for(int i=0; i<M; i++)
+    //         cout << arr[i] << " ";
+    //     cout <<"\n";
     //     return;
     // }
 
-    // for(int i=1; i<=N; i++) { // 1부터 N까지 숫자중에
-    //     if(!isused[i]) {    // 수열 만들기에 i가 사용되지 않았다면
-    //         arr[k] = i;     // k번째 수를 i값으로 정하고
-    //         isused[i] = true; // i 값 사용했다고 표시
-    //         boj15650(k+1);   // k정했으니 다음 수를 정하러 한 단계 더 들어감
-    //         isused[i] = false; // k번째 수를 i로 정한 모든 경우에 대해 다 확인했으니 i를 이제 사용되지않았다고 명시함.
+    // for(int i=start; i<=N; i++) {
+    //     if(!isused[i]) {
+    //         isused[i] = true;
+    //         arr[k] = i;
+    //         boj15650(k+1, i);
+    //         isused[i] = false;
     //     }
     // }
 
     //#2 next_permutation 이용한 풀이
+    vector <int> npn;
+    for(int i=0; i<N; i++) {
+        if(i<M)
+            npn.push_back(0);
+        else
+            npn.push_back(1);
+    }
     
-    do{
-        bool jump = false;
-        for(int i=0; i<M; i++) {
-            if(is_sorted(V.begin(), V.begin() + M)) {
-                cout << V[i] << " ";
-                jump = true;
+    do {
+        for(int i=0; i<N; i++) {
+                if(npn[i] == 0)
+                    cout << V[i] << " ";
             }
-                
-        }
-        if(jump)
-            cout << "\n";
-        reverse(V.begin() + M, V.end()); // next_permutation의 동작을 잘 알아야 쓸 수 있는 스킬
-    }while(next_permutation(V.begin(), V.end())); //next_permutation은 오름차순을 내림차순으로 정렬 하는 과정에서 모든 순열을 알수 있는 함수다.
-                                                  //이때 각 요소를 크기 비교 하기때문에 위와 같은 트릭이 가능하다.
+        cout << "\n";
+    } while (next_permutation(npn.begin(), npn.end()));
 }
 
 void boj15651(int k) {  // K개 선택함
@@ -245,19 +246,90 @@ void boj15654(int k) {  // K개 선택함
     
 }
 
+void boj15655(int k, int start) {  // K개 선택함
+    
+    //#1 백트랙킹 풀이
+    // if(k==M) {
+    //     for(int i=0; i<M; i++)
+    //         cout << arr[i] << ' ';
+    //     cout << "\n";
+    //     return;
+    // }
+    // for(int i=start; i<N; i++) {
+    //     if(!isused[i]) {
+    //         isused[i] = true;
+    //         arr[k] = V[i];
+    //         boj15655(k+1, i);
+    //         isused[i] = false;
+    //     }
+    // }
+
+    //#2 next_permutation 풀이
+    vector <int> npn;
+    for(int i=0; i<N; i++) {
+        if(i<M)
+            npn.push_back(0);
+        else
+            npn.push_back(1);
+    }
+    
+    do {
+        for(int i=0; i<N; i++) {
+            if(npn[i] == 0)
+            cout << V[i] << " ";
+        }
+        cout << "\n";
+    } while (next_permutation(npn.begin(), npn.end()));
+}
+
+void boj15656(int k) {  // K개 선택함
+    
+    //#1 백트랙킹 풀이
+    if(k == M) {
+        for(int i=0; i<M; i++) {
+            cout << arr[i] << " ";
+        }
+        cout << "\n";
+        return;
+    }
+
+    for(int i=0; i<N; i++) {
+            arr[k] = V[i];
+            boj15656(k+1);
+    }
+    
+}
+
+void boj15657(int k, int start) {  // K개 선택함
+    
+    //#1 백트랙킹 풀이
+    if(k == M) {
+        for(int i=0; i<M; i++) {
+            cout << arr[i] << " ";
+        }
+        cout << "\n";
+        return;
+    }
+
+    for(int i=start; i<N; i++) {
+        arr[k] = V[i];
+        boj15657(k+1, i);
+    }
+}
+
 //1, 2, 5, 6번과 같은 상황에서는 next_permutation을 통해 구현
 int main()
 {
     ios::sync_with_stdio(0);
     cin.tie(0);
     cin >> N >> M;
-    // for(int i=0; i<N; i++) {
-    //     int tmp;
-    //     cin >> tmp;
-    //     V.push_back(tmp);
-    // }
-        
-    // sort(V.begin(), V.end());
+    for(int i=0; i<N; i++) {
+        int tmp;
+        cin >> tmp;
+        V.push_back(tmp);
+    }
+    sort(V.begin(), V.end());
+
     // next_permutation_train();
     // boj15649(0);
     // boj9663(0);
@@ -268,8 +340,11 @@ int main()
     // cout << cnt;
     // for(int i=1; i<=N; i++)
     //     V.push_back(i);
-    // boj15650(0);
+    // boj15650(0, 1);
     // boj15651(0);
     // boj15652(0);
-    boj15654(0);
+    // boj15654(0);
+    boj15655(0, 0);
+    // boj15656(0);
+    // boj15657(0, 0);
 }
