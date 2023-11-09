@@ -317,6 +317,32 @@ void boj15657(int k, int start) {  // K개 선택함
     }
 }
 
+
+//set은 유일한 원소만을 갖을 수 있는 구조로서 수학적으로 집합을 의미하는 것을 알 수 있다.
+//set은 특정 기준에 의하여 원소들이 자동 정렬되는 노드 기반 컨테이너이다.
+//set은 기본적으로 오름차순(less) 정렬이고 greater 조건자를 줌으로써 내림차순으로 정렬할 수도 있다.
+//또한, 균형 이진 트리로 구현되어 빠른 시간으로 원소를 탐색할 수 있으며 이에 따라 탐색할 수 있도록 여러가지 탐색 함수를 제공해 준다.
+// https://notepad96.tistory.com/25
+set <vector<int>> s; 
+void boj15663(int k, int start) {  // K개 선택함
+    if(k == M) {
+        vector<int> res;
+        for(int i=0; i<M; i++)
+            res.push_back(arr[i]);
+        s.insert(res); // 벡터 자체를 넣으면 되는데 왜 생각 못했을까...
+        res.clear();
+        return;
+    }
+    for(int i=0; i<N; i++) {
+        if(!isused[i]) {
+            isused[i] = true;
+            arr[k] = V[i];
+            boj15663(k+1, i);
+            isused[i] = false;
+        }
+    }
+}
+
 //1, 2, 5, 6번과 같은 상황에서는 next_permutation을 통해 구현
 int main()
 {
@@ -344,7 +370,16 @@ int main()
     // boj15651(0);
     // boj15652(0);
     // boj15654(0);
-    boj15655(0, 0);
+    // boj15655(0, 0);
     // boj15656(0);
     // boj15657(0, 0);
+    boj15663(0, 0);
+
+    for(auto vec:s) {
+        for(auto i:vec)
+            cout << i << " ";
+        cout <<"\n";
+    }
+        
+    
 }
