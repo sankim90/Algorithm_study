@@ -3,7 +3,7 @@ using namespace std;
 
 int N, M;
 int cnt;
-bool isused[35];
+bool isused[51];
 bool isused1[35];
 bool isused2[35];
 int arr[10];
@@ -323,10 +323,10 @@ void boj15657(int k, int start) {  // K개 선택함
 //set은 기본적으로 오름차순(less) 정렬이고 greater 조건자를 줌으로써 내림차순으로 정렬할 수도 있다.
 //또한, 균형 이진 트리로 구현되어 빠른 시간으로 원소를 탐색할 수 있으며 이에 따라 탐색할 수 있도록 여러가지 탐색 함수를 제공해 준다.
 // https://notepad96.tistory.com/25
-set <vector<int>> s; 
+set <vector<int>> s;
+vector<int> res;
 void boj15663(int k, int start) {  // K개 선택함
     if(k == M) {
-        vector<int> res;
         for(int i=0; i<M; i++)
             res.push_back(arr[i]);
         s.insert(res); // 벡터 자체를 넣으면 되는데 왜 생각 못했을까...
@@ -343,18 +343,81 @@ void boj15663(int k, int start) {  // K개 선택함
     }
 }
 
+void boj15664(int k, int start) {  // K개 선택함
+    if(k == M) {
+        for(int i=0; i<M; i++)
+            res.push_back(arr[i]);
+        s.insert(res); // 벡터 자체를 넣으면 되는데 왜 생각 못했을까...
+        res.clear();
+        return;
+    }
+    for(int i=start; i<N; i++) {
+        if(!isused[i]) {
+            isused[i] = true;
+            arr[k] = V[i];
+            boj15664(k+1, i);
+            isused[i] = false;
+        }
+    }
+}
+
+void boj15665(int k, int start) {  // K개 선택함
+    if(k == M) {
+        for(int i=0; i<M; i++)
+            res.push_back(arr[i]);
+        s.insert(res); // 벡터 자체를 넣으면 되는데 왜 생각 못했을까...
+        res.clear();
+        return;
+    }
+    for(int i=0; i<N; i++) {
+            arr[k] = V[i];
+            boj15665(k+1, i);
+    }
+}
+
+void boj15666(int k, int start) {  // K개 선택함
+    if(k == M) {
+        for(int i=0; i<M; i++)
+            res.push_back(arr[i]);
+        s.insert(res); // 벡터 자체를 넣으면 되는데 왜 생각 못했을까...
+        res.clear();
+        return;
+    }
+    for(int i=start; i<N; i++) {
+            arr[k] = V[i];
+            boj15666(k+1, i);
+    }
+}
+
+void boj6603(int k, int st) {
+    if(k == M) {
+        for(int i=0; i<M; i++)
+            cout << arr[i] << " ";
+        cout << "\n";
+        return;
+    }
+    for(int i=st; i<N; i++) {
+        if(!isused[i]) {
+            isused[i] = true;
+            arr[k] = V[i];
+            boj6603(k+1, i);
+            isused[i] = false;
+        }
+    }
+}
+
 //1, 2, 5, 6번과 같은 상황에서는 next_permutation을 통해 구현
 int main()
 {
     ios::sync_with_stdio(0);
     cin.tie(0);
-    cin >> N >> M;
-    for(int i=0; i<N; i++) {
-        int tmp;
-        cin >> tmp;
-        V.push_back(tmp);
-    }
-    sort(V.begin(), V.end());
+    // cin >> N >> M;
+    // for(int i=0; i<N; i++) {
+    //     int tmp;
+    //     cin >> tmp;
+    //     V.push_back(tmp);
+    // }
+    // sort(V.begin(), V.end());
 
     // next_permutation_train();
     // boj15649(0);
@@ -373,13 +436,30 @@ int main()
     // boj15655(0, 0);
     // boj15656(0);
     // boj15657(0, 0);
-    boj15663(0, 0);
+    // boj15663(0, 0);
+    // boj15664(0, 0);
+    // boj15665(0, 0);
+    // boj15666(0, 0);
 
-    for(auto vec:s) {
-        for(auto i:vec)
-            cout << i << " ";
-        cout <<"\n";
+    while(1) {
+        cin >> N;
+        M = 6;
+        if(!N) break;
+
+        for(int i=0; i<N; i++) {
+            int tmp;
+            cin >> tmp;
+            V.push_back(tmp);
+        }
+        boj6603(0, 0);
+        V.clear();
+        cout << "\n";
     }
-        
-    
+
+
+    // for(auto vec:s) {
+    //     for(auto i:vec)
+    //         cout << i << " ";
+    //     cout <<"\n";
+    // }
 }
