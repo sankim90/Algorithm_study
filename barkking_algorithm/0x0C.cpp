@@ -3,11 +3,12 @@ using namespace std;
 
 int N, M;
 int cnt;
+int cnt2;
 bool isused[51];
 bool isused1[35];
 bool isused2[35];
 int arr[10];
-vector <int> V;
+vector <char> V;
 
 //두 수열에서 같은 위치에 다른 값이 있는 경우가 하나라도 있으면 다른 수열이라고 말합니다.
 // An = a1 + 2(n-1)
@@ -406,14 +407,115 @@ void boj6603(int k, int st) {
     }
 }
 
+char str[51];
+void boj1759(int k, int st, int ja, int mo) {
+    if(k == M && ja>1 && mo>0) {
+        for(int i=0; i<M; i++)
+            cout << str[i];
+        cout << "\n";
+        return;
+    }
+    for(int i=st; i<N; i++) {
+        if(!isused[i]) {
+            isused[i] = true;                
+            str[k] = V[i];
+            if(V[i] == 'a' || V[i] == 'e' || V[i] == 'i' || V[i] == 'o' || V[i] == 'u')
+                boj1759(k+1, i, ja, mo+1);
+            else
+                boj1759(k+1, i, ja+1, mo);
+            isused[i] = false;
+        }
+    }
+}
+
+int  dx[4] = {1, 0, -1, 0}; // 행
+int  dy[4] = {0, 1, 0, -1}; // 열
+char  board[5][5];   // Y, S 표기된 보드
+bool  board_S[5][5]; // 7C25 표기를 위한 board
+int vis[5][5]; // 0: 비방문 1: 방문
+int S;
+int rst;
+queue<pair<int, int>> Q;
+
+// 1. 25명 중 7명을 뽑는다 - 조합 이용
+// 2. 7명이 인접했는지 확인한다. - BFS 이용
+// 3. 인접했다면 이다솜파가 4명 이상인지 확인한다.
+bool BFS() {
+
+    //init
+    S = 0;
+    cnt = 0;
+    for(int i=0; i<5; i++) {
+        fill(vis[i], vis[i]+5, 0);
+        fill(board_S[i], board_S[i]+5, 0); 
+    }
+    
+    // arr로부터 board의 r, c 좌표 추출 후 기록
+    for(int i=0; i<7; i++) {
+        int r = arr[i] / 5;
+        int c = arr[i] % 5;
+        board_S[r][c] = 1;
+    }
+    
+    // BFS Flood fill으로 해결, cnt == 1이면 인접한 조직이다.
+    for(int i=0; i<5; i++)
+    {
+        for(int j=0; j<5; j++)
+        {
+            if(board_S[i][j] && !vis[i][j])
+            {
+                Q.push({i, j});
+                vis[i][j] = 1;
+                while (!Q.empty())
+                {
+                    auto cur = Q.front(); Q.pop();
+                    if(board[cur.first][cur.second] == 'S') S++;
+                    for(int dir=0; dir<4; dir++) {
+                        int nx = cur.first  + dx[dir];
+                        int ny = cur.second + dy[dir];
+                        if(nx<0 || nx>=5 || ny<0 || ny>=5) continue;
+                        if(vis[nx][ny] || board_S[nx][ny] == 0 ) continue;
+                        Q.push({nx,ny});
+                        vis[nx][ny] = 1;
+                    }
+                }
+                cnt++;
+            }
+        }
+    }
+    
+    if(cnt > 1 || S < 4)  
+        return false;
+    
+    return true;
+}
+
+void boj1941(int k, int st) { // 7C25 조합, 그룹을 만드는거니 순서 인정 안함 -> 조합
+    if(k == 7) {
+        if(BFS())
+            rst++;
+
+        return;
+    }
+    for(int i=st; i<25; i++) {
+        if(!isused[i]) {
+            isused[i] = true;
+            arr[k] = i;
+            boj1941(k+1, i);
+            isused[i] = false;
+        }
+    }
+}
+
 //1, 2, 5, 6번과 같은 상황에서는 next_permutation을 통해 구현
 int main()
 {
     ios::sync_with_stdio(0);
     cin.tie(0);
     // cin >> N >> M;
+    // cin >> M >> N;
     // for(int i=0; i<N; i++) {
-    //     int tmp;
+    //     char tmp;
     //     cin >> tmp;
     //     V.push_back(tmp);
     // }
@@ -441,21 +543,27 @@ int main()
     // boj15665(0, 0);
     // boj15666(0, 0);
 
-    while(1) {
-        cin >> N;
-        M = 6;
-        if(!N) break;
+    // while(1) {
+    //     cin >> N;
+    //     M = 6;
+    //     if(!N) break;
 
-        for(int i=0; i<N; i++) {
-            int tmp;
-            cin >> tmp;
-            V.push_back(tmp);
-        }
-        boj6603(0, 0);
-        V.clear();
-        cout << "\n";
-    }
+    //     for(int i=0; i<N; i++) {
+    //         int tmp;
+    //         cin >> tmp;
+    //         V.push_back(tmp);
+    //     }
+    //     boj6603(0, 0);
+    //     V.clear();
+    //     cout << "\n";
+    // }
+    // boj1759(0, 0, 0, 0);
+    for(int i=0; i<5; i++)
+        for(int j=0; j<5; j++)
+            cin >> board[i][j];
 
+    boj1941(0, 0);
+    cout << rst;
 
     // for(auto vec:s) {
     //     for(auto i:vec)
